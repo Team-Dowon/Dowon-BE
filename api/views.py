@@ -165,16 +165,11 @@ class PostListView(APIView):
         form = PostForm(data=data)
 
         if form.is_valid():
-            post = Post()
-
-            post.user = form.cleaned_data['user']
-            post.title = form.cleaned_data['title']
-            post.content = form.cleaned_data['content']
-
-            post.save()
+            form.save()
 
             return Response("Post Submitted", status=status.HTTP_201_CREATED)
         return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class PostDetailView(APIView):
     def get_object_or_404(self, post_id):
@@ -185,8 +180,31 @@ class PostDetailView(APIView):
 
     def get(self, request, post_id):
         post = self.get_object_or_404(post_id)
+
         serializer = PostSerializer(post)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, post_id):
+        cur_post = self.get_object_or_404(post_id)
+
+        user = User.objects.get(id=request.user.id)
+        title = request.data["title"]
+        content = request.data["content"]
+
+        data = {
+            "user": user,
+            "title": title,
+            "content": content,
+        }
+
+        if cur_post.user == request.user:
+            form = PostForm(data=data, instance=cur_post)
+
+            if form.is_valid():
+                form.save()
+
+                return Response("Post Edited", status=status.HTTP_201_CREATED)
+            return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, post_id):
         post = self.get_object_or_404(post_id)
@@ -194,63 +212,142 @@ class PostDetailView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# class CommentListView(APIView):
-#     def filter_object_or_404(self, condition_id):
-#         try:
-#             return Question.objects.filter(condition=condition_id)
-#         except Question.DoesNotExist:
-#             raise Http404
-#
-#     def get(self, request, condition_id):
-#         questions = self.filter_object_or_404(condition_id)
-#         serializer = QuestionSerializer(questions, many=True)
-#         return Response(serializer.data, status=status.HTTP_200_OK)
-#
-#
-# class CommentDetailView(APIView):
-#     def get_object_or_404(self, condition_id, question_id):
-#         try:
-#             return Question.objects.get(condition=condition_id, pk=question_id)
-#         except Question.DoesNotExist:
-#             raise Http404
-#
-#     def get(self, request, condition_id, question_id):
-#         question = self.get_object_or_404(condition_id, question_id)
-#         serializer = QuestionSerializer(question)
-#         return Response(serializer.data, status=status.HTTP_200_OK)
-#
-#     def delete(self, request, condition_id, question_id):
-#         question = self.get_object_or_404(condition_id, question_id)
-#         question.delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT)
-#
-#
-# class RequestListView(APIView):
-#     def filter_object_or_404(self, condition_id):
-#         try:
-#             return Question.objects.filter(condition=condition_id)
-#         except Question.DoesNotExist:
-#             raise Http404
-#
-#     def get(self, request, condition_id):
-#         questions = self.filter_object_or_404(condition_id)
-#         serializer = QuestionSerializer(questions, many=True)
-#         return Response(serializer.data, status=status.HTTP_200_OK)
-#
-#
-# class RequestDetailView(APIView):
-#     def get_object_or_404(self, condition_id, question_id):
-#         try:
-#             return Question.objects.get(condition=condition_id, pk=question_id)
-#         except Question.DoesNotExist:
-#             raise Http404
-#
-#     def get(self, request, condition_id, question_id):
-#         question = self.get_object_or_404(condition_id, question_id)
-#         serializer = QuestionSerializer(question)
-#         return Response(serializer.data, status=status.HTTP_200_OK)
-#
-#     def delete(self, request, condition_id, question_id):
-#         question = self.get_object_or_404(condition_id, question_id)
-#         question.delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT)
+class CommentListView(APIView):
+    def filter_object_or_404(self, post_id):
+        try:
+            return Comment.objects.filter(post=post_id)
+        except Comment.DoesNotExist:
+            raise Http404
+
+    def get(self, request, post_id):
+        comments = self.filter_object_or_404(post_id)
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, post_id):
+        user = User.objects.get(id=request.user.id)
+        content = request.data["content"]
+
+        data = {
+            "user": user,
+            "post": post_id,
+            "content": content,
+        }
+
+        form = CommentForm(data=data)
+
+        if form.is_valid():
+            form.save()
+
+            return Response("Comment Submitted", status=status.HTTP_201_CREATED)
+        return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CommentDetailView(APIView):
+    def get_object_or_404(self, post_id, comment_id):
+        try:
+            return Comment.objects.get(post=post_id, pk=comment_id)
+        except Comment.DoesNotExist:
+            raise Http404
+
+    def get(self, request, post_id, comment_id):
+        comment = self.get_object_or_404(post_id, comment_id)
+        serializer = CommentSerializer(comment)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, post_id, comment_id):
+        cur_comment = self.get_object_or_404(post_id, comment_id)
+
+        user = User.objects.get(id=request.user.id)
+        content = request.data["content"]
+
+        data = {
+            "user": user,
+            "post": post_id,
+            "content": content,
+        }
+
+        if cur_comment.user == request.user:
+            form = CommentForm(data=data, instance=cur_comment)
+
+            if form.is_valid():
+                form.save()
+
+                return Response("Comment Edited", status=status.HTTP_201_CREATED)
+            return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, post_id, comment_id):
+        comment = self.get_object_or_404(post_id, comment_id)
+        comment.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class RequestListView(APIView):
+    def get(self, request):
+        requests = Request.objects.all()
+        serializer = RequestSerializer(requests)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        user = User.objects.get(id=request.user.id)
+        title = request.data["title"]
+        content = request.data["content"]
+        name = request.data["name"]
+
+        data = {
+            "user": user,
+            "title": title,
+            "content": content,
+            "name": name,
+        }
+
+        form = RequestForm(data=data)
+
+        if form.is_valid():
+            form.save()
+
+            return Response("Request Submitted", status=status.HTTP_201_CREATED)
+        return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RequestDetailView(APIView):
+    def get_object_or_404(self, request_id):
+        try:
+            return Request.objects.get(pk=request_id)
+        except Request.DoesNotExist:
+            raise Http404
+
+    def get(self, request, request_id):
+        request = self.get_object_or_404(request_id)
+
+        serializer = RequestSerializer(request)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, request_id):
+        cur_request = self.get_object_or_404(request_id)
+
+        user = User.objects.get(id=request.user.id)
+        title = request.data["title"]
+        content = request.data["content"]
+        name = request.data["name"]
+
+        data = {
+            "user": user,
+            "title": title,
+            "content": content,
+            "name": name,
+        }
+
+        if cur_request.user == request.user:
+            form = RequestForm(data=data, instance=cur_request)
+
+            if form.is_valid():
+                form.save()
+
+                return Response("Request Edited", status=status.HTTP_201_CREATED)
+            return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, request_id):
+        request = self.get_object_or_404(request_id)
+        request.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

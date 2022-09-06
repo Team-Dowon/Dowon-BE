@@ -21,8 +21,6 @@ class KDictionarySerializer(serializers.ModelSerializer):
 
 
 class RequestSerializer(serializers.ModelSerializer):
-    request_vote = VoteSerializer(many=False)
-
     class Meta:
         model = Request
         fields = '__all__'

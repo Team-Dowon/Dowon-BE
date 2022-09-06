@@ -97,12 +97,13 @@ class Post(BaseRPC):
     title = models.CharField(max_length=25)
 
     def __str__(self):
-        return self.title
+        return str(self.id)
 
 
 class Comment(BaseRPC):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_comment')
-    color = models.IntegerField()
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_comment')
+    color = models.CharField(max_length=7, default='#000000', blank=True)
 
     def __str__(self):
         return self.content

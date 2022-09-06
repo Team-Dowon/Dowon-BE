@@ -13,15 +13,15 @@ urlpatterns = [
 
     path('user', UserDetailView.as_view()),
 
-    #path('dictionary', DictionaryListView.as_view()),
-    path('dictionary/<str:dictionary_id>', DictionaryDetailView.as_view()),
+    #path('dictionary', DictionaryListView.as_view()), # 초성검색
+    path('dictionary/<int:dictionary_id>', DictionaryDetailView.as_view()),
 
     path('post', PostListView.as_view()),
-    path('post/<str:post_id>', PostDetailView.as_view()),
+    path('post/<int:post_id>', PostDetailView.as_view()),
 
-    #path('post/<str:post_id>/comment', CommentListView.as_view()),
-    #path('post/<str:post_id>/comment/<str:comment_id>', CommentDetailView.as_view()),
+    path('post/<int:post_id>/comment', CommentListView.as_view()),
+    path('post/<int:post_id>/comment/<int:comment_id>', CommentDetailView.as_view()),
 
-    #path('request', RequestListView.as_view()),
-    #path('request/<str:request_id>', RequestDetailView.as_view()),
+    path('request', RequestListView.as_view()),
+    path('request/<int:request_id>', RequestDetailView.as_view()),
 ]
