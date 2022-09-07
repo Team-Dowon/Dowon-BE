@@ -148,7 +148,7 @@ class DictionaryDetailView(APIView):
 class PostListView(APIView):
     def get(self, request):
         posts = Post.objects.all()
-        serializer = PostSerializer(posts)
+        serializer = PostSerializer(posts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
