@@ -208,9 +208,10 @@ class PostDetailView(APIView):
 
     def delete(self, request, post_id):
         post = self.get_object_or_404(post_id)
-        post.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
+        if post.user == request.user:
+            post.delete()
+            return Response(f"A{post_id} Deleted", status=status.HTTP_204_NO_CONTENT)
+        return Response("Not allowed user", status=status.HTTP_400_BAD_REQUEST)
 
 class CommentListView(APIView):
     def filter_object_or_404(self, post_id):
@@ -278,8 +279,10 @@ class CommentDetailView(APIView):
 
     def delete(self, request, post_id, comment_id):
         comment = self.get_object_or_404(post_id, comment_id)
-        comment.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        if comment.user == request.user:
+            comment.delete()
+            return Response(f"A{comment_id} Deleted", status=status.HTTP_204_NO_CONTENT)
+        return Response("Not allowed user", status=status.HTTP_400_BAD_REQUEST)
 
 
 class RequestListView(APIView):
@@ -348,6 +351,8 @@ class RequestDetailView(APIView):
             return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, request_id):
-        request = self.get_object_or_404(request_id)
-        request.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        request1 = self.get_object_or_404(request_id)
+        if request1.user == request.user:
+            request1.delete()
+            return Response(f"A{request_id} Deleted", status=status.HTTP_204_NO_CONTENT)
+        return Response("Not allowed user", status=status.HTTP_400_BAD_REQUEST)
