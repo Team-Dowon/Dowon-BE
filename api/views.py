@@ -281,7 +281,7 @@ class CommentDetailView(APIView):
         comment = self.get_object_or_404(post_id, comment_id)
         if comment.user == request.user:
             comment.delete()
-            return Response(f"A{comment_id} Deleted", status=status.HTTP_204_NO_CONTENT)
+            return Response(f"A{comment_id} Deleted", status=status.HTTP_200_OK)
         return Response("Not allowed user", status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -354,5 +354,5 @@ class RequestDetailView(APIView):
         request1 = self.get_object_or_404(request_id)
         if request1.user == request.user:
             request1.delete()
-            return Response(f"A{request_id} Deleted", status=status.HTTP_204_NO_CONTENT)
+            return Response(f"A{request_id} Deleted", status=status.HTTP_200_OK)
         return Response("Not allowed user", status=status.HTTP_400_BAD_REQUEST)
