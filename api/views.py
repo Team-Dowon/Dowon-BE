@@ -285,7 +285,7 @@ class CommentDetailView(APIView):
 class RequestListView(APIView):
     def get(self, request):
         requests = Request.objects.all()
-        serializer = RequestSerializer(requests)
+        serializer = RequestSerializer(requests, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
