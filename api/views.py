@@ -23,13 +23,7 @@ class UserDetailView(APIView):
             }, status=status.HTTP_404_NOT_FOUND)
         else:
             serializer = UserSerializer(request.user)
-            return Response({
-                "user": {
-                    "u_id": serializer.data["u_id"],
-                    "nickname": serializer.data["nickname"],
-                    "email": serializer.data["email"],
-                }
-            }, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class LoginView(APIView):  # 로그인
@@ -180,7 +174,6 @@ class PostDetailView(APIView):
 
     def get(self, request, post_id):
         post = self.get_object_or_404(post_id)
-
         serializer = PostSerializer(post)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -212,6 +205,7 @@ class PostDetailView(APIView):
             post.delete()
             return Response(f"A{post_id} Deleted", status=status.HTTP_200_OK)
         return Response("Not allowed user", status=status.HTTP_400_BAD_REQUEST)
+
 
 class CommentListView(APIView):
     def filter_object_or_404(self, post_id):

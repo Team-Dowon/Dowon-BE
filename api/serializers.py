@@ -21,21 +21,27 @@ class KDictionarySerializer(serializers.ModelSerializer):
 
 
 class RequestSerializer(serializers.ModelSerializer):
+    user_nickname = serializers.CharField(source='user.nickname')
+
     class Meta:
         model = Request
-        fields = '__all__'
+        fields = ('id', 'user_nickname', 'title', 'content', 'name', 'date')
 
 
 class PostSerializer(serializers.ModelSerializer):
+    user_nickname = serializers.CharField(source='user.nickname')
+
     class Meta:
         model = Post
-        fields = '__all__'
+        fields = ('id', 'user_nickname', 'title', 'content', 'date')
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    user_nickname = serializers.CharField(source='user.nickname')
+
     class Meta:
         model = Comment
-        fields = '__all__'
+        fields = ('id', 'post', 'user_nickname', 'content', 'date')
 
 
 class AnalyzerSerializer(serializers.ModelSerializer):

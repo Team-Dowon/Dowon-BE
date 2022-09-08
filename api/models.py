@@ -97,7 +97,7 @@ class Post(BaseRPC):
     title = models.CharField(max_length=25)
 
     def __str__(self):
-        return str(self.id)
+        return self.title
 
 
 class Comment(BaseRPC):
@@ -110,7 +110,7 @@ class Comment(BaseRPC):
 
 
 class Vote(models.Model):
-    request = models.ForeignKey(Request, on_delete=models.CASCADE, related_name='request_vote')
+    post = models.ForeignKey(Request, on_delete=models.CASCADE, related_name='post_vote')
     tag = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now=True)
 
