@@ -113,17 +113,42 @@ class LogoutView(APIView):  # 로그아웃
             }, status=status.HTTP_400_BAD_REQUEST)
 
 
-# class DictionaryListView(APIView):
-#     def filter_object_or_404(self, condition_id):
-#         try:
-#             return Question.objects.filter(condition=condition_id)
-#         except Question.DoesNotExist:
-#             raise Http404
-#
-#     def get(self, request, condition_id):
-#         questions = self.filter_object_or_404(condition_id)
-#         serializer = QuestionSerializer(questions, many=True)
-#         return Response(serializer.data, status=status.HTTP_200_OK)
+class DictionaryListView(APIView):
+    def filter_object_or_404(self, search):
+        try:
+            return SDictionary.objects.filter(name__contains=search)
+        except SDictionary.DoesNotExist:
+            raise Http404
+
+    def post(self, request):
+        k = 0
+        dictionaries = SDictionary.objects.filter(pk=0)
+        search = request.data["search"]
+        ascii_values = [ord(character) for character in search]
+        for cho in ascii_values:
+            k = k + 1
+            if 12593 <= cho & cho <= 12622:
+                if cho < ord('ㅅ'):
+                    d = {ord('ㄱ'): ord('가'), ord('ㄲ'): ord('까'), ord('ㄴ'): ord('나'), ord('ㄷ'): ord('다'), ord('ㄸ'): ord('따'), ord('ㄹ'): ord('라'),
+                         ord('ㅁ'): ord('마'), ord('ㅂ'): ord('바'), ord('ㅃ'): ord('빠')}
+                    cho2 = d.get(cho)
+                else:
+                    cho2 = (cho - 12604) * 588 + 44032
+                if k > 1:
+                    dictionaries1 = SDictionary.objects.filter(pk=0)
+                for i in range(588):
+                    dictionaries2 = SDictionary.objects.filter(name__contains=chr(cho2 + i))
+                    if k > 1:
+                        dictionaries1 = dictionaries1 | dictionaries2
+                    else:
+                        dictionaries = dictionaries | dictionaries2
+                if k > 1:
+                    dictionaries = dictionaries & dictionaries1
+
+            else:
+                dictionaries = self.filter_object_or_404(search)
+        serializer = SDictionarySerializer(dictionaries, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class DictionaryDetailView(APIView):

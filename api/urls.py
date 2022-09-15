@@ -13,7 +13,7 @@ urlpatterns = [
 
     path('user', UserDetailView.as_view()),
 
-    #path('dictionary', DictionaryListView.as_view()), # 초성검색
+    path('dictionary', DictionaryListView.as_view()), # 초성검색
     path('dictionary/<int:dictionary_id>', DictionaryDetailView.as_view()),
 
     path('post', PostListView.as_view()),
