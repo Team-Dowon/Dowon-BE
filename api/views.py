@@ -136,15 +136,14 @@ class DictionaryListView(APIView):
                     cho2 = (cho - 12604) * 588 + 44032
                 if k > 1:
                     dictionaries1 = SDictionary.objects.filter(pk=0)
-                for i in range(588):
-                    dictionaries2 = SDictionary.objects.filter(name__contains=chr(cho2 + i))
-                    if k > 1:
+                    for i in range(588):
+                        dictionaries2 = SDictionary.objects.filter(name__contains=chr(cho2 + i))
                         dictionaries1 = dictionaries1 | dictionaries2
-                    else:
-                        dictionaries = dictionaries | dictionaries2
-                if k > 1:
                     dictionaries = dictionaries & dictionaries1
-
+                else:
+                    for i in range(588):
+                        dictionaries2 = SDictionary.objects.filter(name__contains=chr(cho2 + i))
+                        dictionaries = dictionaries | dictionaries2
             else:
                 dictionaries = self.filter_object_or_404(search)
         serializer = SDictionarySerializer(dictionaries, many=True)
