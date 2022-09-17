@@ -153,7 +153,7 @@ class DictionaryListView(APIView):
 class DictionaryDetailView(APIView):
     def get_object_or_404(self, dictionary_name):
         try:
-            return SDictionary.objects.filter(name=dictionary_name)
+            return SDictionary.objects.get(name=dictionary_name)
         except SDictionary.DoesNotExist:
             raise Http404
 
