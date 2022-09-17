@@ -151,14 +151,14 @@ class DictionaryListView(APIView):
 
 
 class DictionaryDetailView(APIView):
-    def get_object_or_404(self, dictionary_id):
+    def get_object_or_404(self, dictionary_name):
         try:
-            return SDictionary.objects.get(pk=dictionary_id)
+            return SDictionary.objects.filter(name=dictionary_name)
         except SDictionary.DoesNotExist:
             raise Http404
 
-    def get(self, request, dictionary_id):
-        dictionary = self.get_object_or_404(dictionary_id)
+    def get(self, request, dictionary_name):
+        dictionary = self.get_object_or_404(dictionary_name)
         serializer = SDictionarySerializer(dictionary)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
