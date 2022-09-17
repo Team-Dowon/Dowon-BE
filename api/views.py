@@ -10,7 +10,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
-
+# Konlpy에서 Okt를 불러옵니다.
+from konlpy.tag import Okt
 
 # 사용자 정보
 class UserDetailView(APIView):
@@ -165,6 +166,11 @@ class DictionaryDetailView(APIView):
 
 class PostListView(APIView):
     def get(self, request):
+        # Okt Class의 생성자를 이용하여 분석기를 생성
+        okt = Okt()
+
+        # 생성된 객체를 이용하여 형태소를 분석합니다.
+        print(okt.morphs("오늘 밤 주인공은 나야 나 나야 나"))
         posts = Post.objects.all()
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
