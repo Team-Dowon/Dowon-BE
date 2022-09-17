@@ -48,7 +48,6 @@ RUN apk update \
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
 RUN pip install mysqlclient
-SUDO apt-get install libxml2-dev libxslt-dev python-dev
 RUN pip install --no-cache /wheels/*
 RUN apk del build-deps
 
