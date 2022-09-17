@@ -17,6 +17,7 @@ RUN apk update && apk add python3 python3-dev mariadb-dev build-base && pip3 ins
 
 # install dependencies
 RUN python3 -m pip install --upgrade pip
+RUN pip install -U setuptools
 COPY ./requirements.txt .
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
