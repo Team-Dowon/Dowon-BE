@@ -129,7 +129,7 @@ class DictionaryListView(APIView):
             k = k + 1
             if 12593 <= cho & cho <= 12622:
                 if cho < ord('ㅅ'):
-                    d = {ord('ㄱ'): ord('가'), ord('ㄲ'): ord('까'), ord('ㄴ'): ord('나'), ord('ㄷ'): ord('다'), ord('ㄸ'): ord('따'), ord('ㄹ'): ord('라'),
+                    d = {ord('ㄱ'): ord('가'), ord('ㄲ'): ord('까'), ord('ㄴ'): ord('나'), ord('ㄷ'): ord('다'), ord('ㄸ'): ord('따'), ord('ㄹ'): ord('라'), 
                          ord('ㅁ'): ord('마'), ord('ㅂ'): ord('바'), ord('ㅃ'): ord('빠')}
                     cho2 = d.get(cho)
                 else:
