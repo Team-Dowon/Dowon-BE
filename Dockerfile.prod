@@ -47,7 +47,8 @@ WORKDIR $APP_HOME
 RUN apk update && apk add libpq
 RUN apk update \
     && apk add --virtual build-deps gcc python3-dev musl-dev \
-    && apk add --no-cache mariadb-dev
+    && apk add --no-cache mariadb-dev \
+    && apk add --update --no-cache g++ gcc libxslt-dev
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
 RUN pip install mysqlclient
