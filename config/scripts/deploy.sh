@@ -23,8 +23,5 @@ then
   sudo chmod +x /usr/local/bin/docker-compose
 fi
 
-sudo yum install gcc libxml2-devel libxslt-devel python-devel
-sudo pip install lxml
-
 echo "start docker-compose up: ubuntu"
 sudo docker-compose -f /home/ubuntu/srv/ubuntu/docker-compose.prod.yml up --build -d # 하이라이트 명령어
