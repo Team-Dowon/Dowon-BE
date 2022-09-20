@@ -16,7 +16,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 class UserDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    def post(self, request):
         if request.user.is_anonymous:
             return Response({
                 "user": "User Not Found"
