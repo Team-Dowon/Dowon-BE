@@ -14,16 +14,27 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 # 사용자 정보
 class UserDetailView(APIView):
-    # permission_classes = [IsAuthenticated]
-
     def post(self, request):
-        if request.user.is_anonymous:
+        try:
+            refresh_token = request.COOKIES.get('jwt')
+            if not refresh_token:
+                return Response({
+                    'message': '토큰이 없습니다.',
+                }, status=status.HTTP_400_BAD_REQUEST)
+            res = Response()
+            token = RefreshToken(refresh_token)
+
+            res.data = {
+                'user_id': token['u_id'],
+                'nickname': token['nickname'],
+                'email': token['email']
+            }
+
+            return res
+        except Exception as e:  # 예외처리
             return Response({
-                "user": "User Not Found"
-            }, status=status.HTTP_404_NOT_FOUND)
-        else:
-            serializer = UserSerializer(request.user)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+                'message': str(e),
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginView(APIView):  # 로그인
@@ -44,6 +55,8 @@ class LoginView(APIView):  # 로그인
 
                 refresh = RefreshToken.for_user(user)  # 유저 정보로 refresh 토큰 생성
                 refresh['nickname'] = user.nickname  # refresh 토큰에 nickname 값 추가로 입력
+                refresh['u_id'] = user.u_id  # refresh 토큰에 nickname 값 추가로 입력
+                refresh['email'] = user.email  # refresh 토큰에 nickname 값 추가로 입력
 
                 res = Response()  # cookie 넣기 위해 Response 사용
                 res.set_cookie('jwt', str(refresh))  # jwt이름의 쿠키 value refresh 토큰으로 설정
