@@ -8,7 +8,6 @@ from django.contrib.auth import authenticate
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
@@ -55,8 +54,8 @@ class LoginView(APIView):  # 로그인
 
                 refresh = RefreshToken.for_user(user)  # 유저 정보로 refresh 토큰 생성
                 refresh['nickname'] = user.nickname  # refresh 토큰에 nickname 값 추가로 입력
-                refresh['u_id'] = user.u_id  # refresh 토큰에 nickname 값 추가로 입력
-                refresh['email'] = user.email  # refresh 토큰에 nickname 값 추가로 입력
+                refresh['u_id'] = user.u_id  # refresh 토큰에 u_id 값 추가로 입력
+                refresh['email'] = user.email  # refresh 토큰에 email 값 추가로 입력
 
                 res = Response()  # cookie 넣기 위해 Response 사용
                 res.set_cookie('jwt', str(refresh))  # jwt이름의 쿠키 value refresh 토큰으로 설정
@@ -183,12 +182,15 @@ class PostListView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
-        user = User.objects.get(id=request.user.id)
+        refresh_token = request.COOKIES.get('jwt')
+        token = RefreshToken(refresh_token)
+
+        #user = User.objects.get(id=request.user.id)
         title = request.data["title"]
         content = request.data["content"]
 
         data = {
-            "user": user,
+            "user": token['nickname'],
             "title": title,
             "content": content,
         }
@@ -216,13 +218,15 @@ class PostDetailView(APIView):
 
     def put(self, request, post_id):
         cur_post = self.get_object_or_404(post_id)
+        refresh_token = request.COOKIES.get('jwt')
+        token = RefreshToken(refresh_token)
 
-        user = User.objects.get(id=request.user.id)
+        #user = User.objects.get(id=request.user.id)
         title = request.data["title"]
         content = request.data["content"]
 
         data = {
-            "user": user,
+            "user": token['nickname'],
             "title": title,
             "content": content,
         }
@@ -238,7 +242,9 @@ class PostDetailView(APIView):
 
     def delete(self, request, post_id):
         post = self.get_object_or_404(post_id)
-        if post.user == request.user:
+        refresh_token = request.COOKIES.get('jwt')
+        token = RefreshToken(refresh_token)
+        if post.user == token['nickname']:
             post.delete()
             return Response(f"A{post_id} Deleted", status=status.HTTP_200_OK)
         return Response("Not allowed user", status=status.HTTP_400_BAD_REQUEST)
@@ -257,11 +263,14 @@ class CommentListView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, post_id):
-        user = User.objects.get(id=request.user.id)
+        refresh_token = request.COOKIES.get('jwt')
+        token = RefreshToken(refresh_token)
+
+        #user = User.objects.get(id=request.user.id)
         content = request.data["content"]
 
         data = {
-            "user": user,
+            "user": token['nickname'],
             "post": post_id,
             "content": content,
         }
@@ -289,12 +298,14 @@ class CommentDetailView(APIView):
 
     def put(self, request, post_id, comment_id):
         cur_comment = self.get_object_or_404(post_id, comment_id)
+        refresh_token = request.COOKIES.get('jwt')
+        token = RefreshToken(refresh_token)
 
-        user = User.objects.get(id=request.user.id)
+        #user = User.objects.get(id=request.user.id)
         content = request.data["content"]
 
         data = {
-            "user": user,
+            "user": token['nickname'],
             "post": post_id,
             "content": content,
         }
@@ -310,7 +321,9 @@ class CommentDetailView(APIView):
 
     def delete(self, request, post_id, comment_id):
         comment = self.get_object_or_404(post_id, comment_id)
-        if comment.user == request.user:
+        refresh_token = request.COOKIES.get('jwt')
+        token = RefreshToken(refresh_token)
+        if comment.user == token['nickname']:
             comment.delete()
             return Response(f"A{comment_id} Deleted", status=status.HTTP_200_OK)
         return Response("Not allowed user", status=status.HTTP_400_BAD_REQUEST)
@@ -323,13 +336,16 @@ class RequestListView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
-        user = User.objects.get(id=request.user.id)
+        refresh_token = request.COOKIES.get('jwt')
+        token = RefreshToken(refresh_token)
+
+        #user = User.objects.get(id=request.user.id)
         title = request.data["title"]
         content = request.data["content"]
         name = request.data["name"]
 
         data = {
-            "user": user,
+            "user": token['nickname'],
             "title": title,
             "content": content,
             "name": name,
@@ -359,14 +375,16 @@ class RequestDetailView(APIView):
 
     def put(self, request, request_id):
         cur_request = self.get_object_or_404(request_id)
+        refresh_token = request.COOKIES.get('jwt')
+        token = RefreshToken(refresh_token)
 
-        user = User.objects.get(id=request.user.id)
+        #user = User.objects.get(id=request.user.id)
         title = request.data["title"]
         content = request.data["content"]
         name = request.data["name"]
 
         data = {
-            "user": user,
+            "user": token['nickname'],
             "title": title,
             "content": content,
             "name": name,
@@ -383,7 +401,9 @@ class RequestDetailView(APIView):
 
     def delete(self, request, request_id):
         request1 = self.get_object_or_404(request_id)
-        if request1.user == request.user:
+        refresh_token = request.COOKIES.get('jwt')
+        token = RefreshToken(refresh_token)
+        if request1.user == token['nickname']:
             request1.delete()
             return Response(f"A{request_id} Deleted", status=status.HTTP_200_OK)
         return Response("Not allowed user", status=status.HTTP_400_BAD_REQUEST)
