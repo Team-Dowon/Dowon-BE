@@ -24,6 +24,7 @@ class UserDetailView(APIView):
             token = RefreshToken(refresh_token)
 
             res.data = {
+                'user_pk': token['pk'],
                 'user_id': token['u_id'],
                 'nickname': token['nickname'],
                 'email': token['email']
@@ -53,6 +54,7 @@ class LoginView(APIView):  # 로그인
                     }, status=status.HTTP_400_BAD_REQUEST)
 
                 refresh = RefreshToken.for_user(user)  # 유저 정보로 refresh 토큰 생성
+                refresh['pk'] = user.pk  # refresh 토큰에 pk 값 추가로 입력
                 refresh['nickname'] = user.nickname  # refresh 토큰에 nickname 값 추가로 입력
                 refresh['u_id'] = user.u_id  # refresh 토큰에 u_id 값 추가로 입력
                 refresh['email'] = user.email  # refresh 토큰에 email 값 추가로 입력
@@ -190,7 +192,7 @@ class PostListView(APIView):
         content = request.data["content"]
 
         data = {
-            "user": token['nickname'],
+            "user": token['pk'],
             "title": title,
             "content": content,
         }
@@ -226,7 +228,7 @@ class PostDetailView(APIView):
         content = request.data["content"]
 
         data = {
-            "user": token['nickname'],
+            "user": token['pk'],
             "title": title,
             "content": content,
         }
@@ -244,7 +246,7 @@ class PostDetailView(APIView):
         post = self.get_object_or_404(post_id)
         refresh_token = request.COOKIES.get('jwt')
         token = RefreshToken(refresh_token)
-        if post.user == token['nickname']:
+        if post.user == token['pk']:
             post.delete()
             return Response(f"A{post_id} Deleted", status=status.HTTP_200_OK)
         return Response("Not allowed user", status=status.HTTP_400_BAD_REQUEST)
@@ -270,7 +272,7 @@ class CommentListView(APIView):
         content = request.data["content"]
 
         data = {
-            "user": token['nickname'],
+            "user": token['pk'],
             "post": post_id,
             "content": content,
         }
@@ -305,7 +307,7 @@ class CommentDetailView(APIView):
         content = request.data["content"]
 
         data = {
-            "user": token['nickname'],
+            "user": token['pk'],
             "post": post_id,
             "content": content,
         }
@@ -323,7 +325,7 @@ class CommentDetailView(APIView):
         comment = self.get_object_or_404(post_id, comment_id)
         refresh_token = request.COOKIES.get('jwt')
         token = RefreshToken(refresh_token)
-        if comment.user == token['nickname']:
+        if comment.user == token['pk']:
             comment.delete()
             return Response(f"A{comment_id} Deleted", status=status.HTTP_200_OK)
         return Response("Not allowed user", status=status.HTTP_400_BAD_REQUEST)
@@ -345,7 +347,7 @@ class RequestListView(APIView):
         name = request.data["name"]
 
         data = {
-            "user": token['nickname'],
+            "user": token['pk'],
             "title": title,
             "content": content,
             "name": name,
@@ -384,7 +386,7 @@ class RequestDetailView(APIView):
         name = request.data["name"]
 
         data = {
-            "user": token['nickname'],
+            "user": token['pk'],
             "title": title,
             "content": content,
             "name": name,
@@ -403,7 +405,7 @@ class RequestDetailView(APIView):
         request1 = self.get_object_or_404(request_id)
         refresh_token = request.COOKIES.get('jwt')
         token = RefreshToken(refresh_token)
-        if request1.user == token['nickname']:
+        if request1.user == token['pk']:
             request1.delete()
             return Response(f"A{request_id} Deleted", status=status.HTTP_200_OK)
         return Response("Not allowed user", status=status.HTTP_400_BAD_REQUEST)
