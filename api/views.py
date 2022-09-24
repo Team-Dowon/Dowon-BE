@@ -14,7 +14,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 
 # 사용자 정보
-class UserDetailViewTEST(APIView):
+class UserDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):

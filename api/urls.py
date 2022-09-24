@@ -12,7 +12,6 @@ urlpatterns = [
     path('user/logout', LogoutView.as_view()),
 
     path('user', UserDetailView.as_view()),
-    path('userTest', UserDetailViewTEST.as_view()),
 
     path('dictionary', DictionaryListView.as_view()), # 초성검색
     path('dictionary/<str:dictionary_name>', DictionaryDetailView.as_view()),
