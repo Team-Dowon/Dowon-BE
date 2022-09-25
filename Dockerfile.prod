@@ -15,9 +15,6 @@ ENV PYTHONUNBUFFERED 1
 # install psycopg2 dependencies
 RUN apk update && apk add python3 python3-dev mariadb-dev build-base && pip3 install mysqlclient
 
-# install java jdk and java jre
-RUN apk add --update --no-cache g++ gcc openjdk8-jre
-
 # install lxml dependencies
 RUN apk add --update --no-cache g++ gcc libxslt-dev
 
@@ -46,13 +43,32 @@ RUN mkdir $APP_HOME/static
 RUN mkdir $APP_HOME/media
 WORKDIR $APP_HOME
 
+# add a simple script that can auto-detect the appropriate JAVA_HOME value
+# based on whether the JDK or only the JRE is installed
+RUN { \
+        echo '#!/bin/sh'; \
+        echo 'set -e'; \
+        echo; \
+        echo 'dirname "$(dirname "$(readlink -f "$(which javac || which java)")")"'; \
+    } > /usr/local/bin/docker-java-home \
+    && chmod +x /usr/local/bin/docker-java-home
+ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
+ENV PATH $PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin
+
+ENV JAVA_VERSION 8u212
+ENV JAVA_ALPINE_VERSION 8.212.04-r0
+
+RUN set -x \
+    && apk add --no-cache \
+        openjdk8="$JAVA_ALPINE_VERSION" \
+    && [ "$JAVA_HOME" = "$(docker-java-home)" ]
+
 # install dependencies
 RUN apk update && apk add libpq
 RUN apk update \
     && apk add --virtual build-deps gcc python3-dev musl-dev \
     && apk add --no-cache mariadb-dev \
-    && apk add --update --no-cache g++ gcc libxslt-dev \
-    && apk add --update --no-cache g++ gcc openjdk8-jre
+    && apk add --update --no-cache g++ gcc libxslt-dev
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
 RUN pip install mysqlclient
