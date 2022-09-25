@@ -338,9 +338,9 @@ class RequestDetailView(APIView):
             raise Http404
 
     def get(self, request, request_id):
-        request = self.get_object_or_404(request_id)
+        request1 = self.get_object_or_404(request_id)
 
-        serializer = RequestSerializer(request)
+        serializer = RequestSerializer(request1)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, request_id):
