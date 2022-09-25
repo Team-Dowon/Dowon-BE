@@ -24,4 +24,6 @@ urlpatterns = [
 
     path('request', RequestListView.as_view()),
     path('request/<int:request_id>', RequestDetailView.as_view()),
+
+    path('oktt', OktListView.as_view())
 ]

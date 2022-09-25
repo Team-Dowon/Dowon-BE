@@ -12,6 +12,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from konlpy.tag import Okt
+
 
 # 사용자 정보
 class UserDetailView(APIView):
@@ -372,3 +374,10 @@ class RequestDetailView(APIView):
             request1.delete()
             return Response(f"A{request_id} Deleted", status=status.HTTP_200_OK)
         return Response("Not allowed user", status=status.HTTP_400_BAD_REQUEST)
+
+
+class OktListView(APIView):
+    def get(self, request):
+        text = '안녕하세욬ㅋㅋㅋ 반가워요 샤릉해'
+        okt = Okt()
+        print(okt.normalize(text))
