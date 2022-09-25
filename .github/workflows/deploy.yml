@@ -2,8 +2,7 @@ name: Deploy to EC2
 on: [push]
 
 default:
-  run:
-    timeout-minutes: 30
+  timeout-minutes: 30
 
 jobs:
   build:
