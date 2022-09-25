@@ -110,12 +110,12 @@ class Comment(BaseRPC):
 
 
 class Vote(models.Model):
-    post = models.ForeignKey(Request, on_delete=models.CASCADE, related_name='post_vote')
+    request = models.ForeignKey(Request, on_delete=models.CASCADE, related_name='request_vote')
     tag = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.title
+        return str(self.request)
 
 
 class Analyzer(models.Model):
