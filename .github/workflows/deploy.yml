@@ -5,7 +5,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    command_timeout: 30m
+    timeout-minutes: 30
     steps:
     - name: checkout
       uses: actions/checkout@master
@@ -32,6 +32,7 @@ jobs:
         remote_key: ${{ secrets.KEY }}
 
     - name: executing remote ssh commands using password
+      timeout-minutes: 30
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
