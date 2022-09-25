@@ -13,7 +13,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # install psycopg2 dependencies
-RUN apk update && apk add openjdk-8-jdk python3 python3-dev mariadb-dev build-base && pip3 install mysqlclient
+RUN apk update && apk add openjdk-18-jdk python3 python3-dev mariadb-dev build-base && pip3 install mysqlclient
 
 # install lxml dependencies
 RUN apk add --update --no-cache g++ gcc libxslt-dev
