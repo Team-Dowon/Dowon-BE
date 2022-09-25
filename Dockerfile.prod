@@ -52,8 +52,7 @@ RUN apk update \
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
 RUN pip install mysqlclient
-RUN pip install --upgrade pip setuptools wheel
-RUN pip install --no-cache /wheels/*
+RUN pip install --upgrade pip setuptools --no-cache /wheels/*
 RUN apk del build-deps
 
 # copy project
