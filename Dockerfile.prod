@@ -13,7 +13,10 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # install psycopg2 dependencies
-RUN apk update && apk add python3 openjdk-18-jdk python3-dev mariadb-dev build-base && pip3 install mysqlclient
+RUN apk update && apk add python3 python3-dev mariadb-dev build-base && pip3 install mysqlclient
+
+# install java jdk and java jre
+RUN apk add -y default-jdk default-jre
 
 # install lxml dependencies
 RUN apk add --update --no-cache g++ gcc libxslt-dev
@@ -48,8 +51,7 @@ RUN apk update && apk add libpq
 RUN apk update \
     && apk add --virtual build-deps gcc python3-dev musl-dev \
     && apk add --no-cache mariadb-dev \
-    && apk add --update --no-cache g++ gcc libxslt-dev \
-    && apk add --no-cache openjdk-18-jdk
+    && apk add --update --no-cache g++ gcc libxslt-dev
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
 RUN pip install mysqlclient
