@@ -1,8 +1,6 @@
 name: Deploy to EC2
 on: [push]
 jobs:
-
-  timeout-minutes: 30
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -34,6 +32,7 @@ jobs:
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@master
       with:
+        timeout-minutes: 30
         host: ${{ secrets.HOST }}
         username: ubuntu
         key: ${{ secrets.KEY }}
