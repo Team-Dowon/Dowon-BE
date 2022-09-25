@@ -381,3 +381,4 @@ class OktListView(APIView):
         text = '안녕하세욬ㅋㅋㅋ 반가워요 샤릉해'
         okt = Okt()
         print(okt.normalize(text))
+        return Response("Not allowed user", status=status.HTTP_400_BAD_REQUEST)
