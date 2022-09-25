@@ -2,6 +2,7 @@ name: Deploy to EC2
 on: [push]
 jobs:
 
+  timeout-minutes: 30
   build:
     name: Build
     runs-on: ubuntu-latest
