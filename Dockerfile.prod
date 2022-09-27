@@ -1,65 +1,69 @@
-# BUILDER #
-###########
-
-# pull official base image
-FROM python:3.8.3-alpine as builder
-
-# set work directory
-WORKDIR /usr/src/app
-
-
-# set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-
-# install psycopg2 dependencies
-RUN apk update && apk add python3 python3-dev mariadb-dev build-base && pip3 install mysqlclient
-
-# install lxml dependencies
-RUN apk add --update --no-cache g++ gcc libxslt-dev
-
-# install dependencies
-RUN python3 -m pip install --upgrade pip
-COPY ./requirements.txt .
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
-
-
-# FINAL #
-
-# pull official base image
+# configuration source: https://hub.docker.com/r/theeluwin/ubuntu-konlpy/dockerfile
+# basing on ubuntu OS
 FROM ubuntu:latest
+LABEL maintainer="Ahn Young Jin <snoop2head@gmail.com>"
 
-# create directory for the app user
-RUN mkdir -p /home/app
+# apt init
+ENV LANG=C.UTF-8
+ENV TZ=Asia/Seoul
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends tzdata g++ git curl
 
-# create the app user
-RUN addgroup -S app && adduser -S app -G app
+# installing java jdk and java jre
+RUN apt-get install -y default-jdk default-jre
 
-# create the appropriate directories
-ENV HOME=/home/app
-ENV APP_HOME=/home/app/web
-RUN mkdir $APP_HOME
-RUN mkdir $APP_HOME/static
-RUN mkdir $APP_HOME/media
-WORKDIR $APP_HOME
+# installing python3 and pip3
+RUN apt-get install -y python3-pip python3-dev
 
-# install dependencies
-RUN apk update && apk add libpq
-RUN apk update \
-    && apk add --virtual build-deps gcc python3-dev musl-dev \
-    && apk add --no-cache mariadb-dev \
-    && apk add --update --no-cache g++ gcc libxslt-dev
-COPY --from=builder /usr/src/app/wheels /wheels
-COPY --from=builder /usr/src/app/requirements.txt .
-RUN pip install mysqlclient
-RUN pip install --upgrade pip setuptools --no-cache /wheels/*
-RUN apk del build-deps
+# install postgres module
+RUN apt-get install -y python-psycopg2
 
-# copy project
-COPY . $APP_HOME
+RUN cd /usr/local/bin && \
+    ln -s /usr/bin/python3 python && \
+    ln -s /usr/bin/pip3 pip && \
+    pip3 install --upgrade pip
 
-# chown all the files to the app user
-RUN chown -R app:app $APP_HOME
+# apt cleanse
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# change to the app user
-USER app
+# timezone
+RUN ln -sf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# make workspace
+RUN mkdir -p /workspace
+WORKDIR /workspace
+
+# install konlpy dependencies: jpype, konlpy, with mecab module
+RUN pip install jpype1-py3 konlpy
+RUN cd /workspace && \
+    curl -s https://raw.githubusercontent.com/konlpy/konlpy/master/scripts/mecab.sh | bash -s
+
+# getting environment variable on console
+ENV PYTHONNUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
+
+# WSGIPath settings and DJANGO_SETTINGS_MODULE for deployment
+ENV WSGIPath config/wsgi.py
+ENV DJANGO_SETTINGS_MODULE config.settings
+
+# copying local file into container's /code/ directory
+COPY ./requirements.txt /code/requirements.txt
+
+# python & Django configuration
+RUN apt-get install -y python3-pip
+RUN pip install --upgrade pip
+RUN pip install -r /code/requirements.txt
+
+# apt cleanse
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# copying the rest of the files into container's /code/ directory
+# container's working directory is /code/
+COPY . /code/
+WORKDIR /code/
+
+#Exposing port to 8000
+EXPOSE 8000
