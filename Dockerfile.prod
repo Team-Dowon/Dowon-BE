@@ -27,7 +27,7 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requir
 # FINAL #
 
 # pull official base image
-FROM python:3.8.3-alpine
+FROM ubuntu:latest
 
 # create directory for the app user
 RUN mkdir -p /home/app
@@ -42,22 +42,6 @@ RUN mkdir $APP_HOME
 RUN mkdir $APP_HOME/static
 RUN mkdir $APP_HOME/media
 WORKDIR $APP_HOME
-
-# add a simple script that can auto-detect the appropriate JAVA_HOME value
-# based on whether the JDK or only the JRE is installed
-RUN { \
-        echo '#!/bin/sh'; \
-        echo 'set -e'; \
-        echo; \
-        echo 'dirname "$(dirname "$(readlink -f "$(which javac || which java)")")"'; \
-    } > /usr/local/bin/docker-java-home \
-    && chmod +x /usr/local/bin/docker-java-home
-ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
-ENV PATH $PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin
-
-RUN set -x \
-    && apk add --no-cache openjdk8 \
-    && [ "$JAVA_HOME" = "$(docker-java-home)" ]
 
 # install dependencies
 RUN apk update && apk add libpq
