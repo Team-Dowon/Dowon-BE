@@ -1,7 +1,7 @@
 name: Deploy to EC2
 on: [push]
-
 jobs:
+
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -13,8 +13,9 @@ jobs:
       run: |
         touch .env
         echo "${{ secrets.ENV_VARS }}" >> .env
+
     - name: create remote directory
-      uses: appleboy/ssh-action@dce9d565de8d876c11d93fa4fe677c0285a66d78
+      uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ubuntu
@@ -36,6 +37,5 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ubuntu
         key: ${{ secrets.KEY }}
-        command_timeout: 60m
         script: |
           sh /home/ubuntu/srv/ubuntu/config/scripts/deploy.sh
