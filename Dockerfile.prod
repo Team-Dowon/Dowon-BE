@@ -40,6 +40,13 @@ RUN pip install pip==21.3.1
 COPY ./requirements.txt .
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
+COPY --from=builder /usr/src/app/wheels /wheels
+COPY --from=builder /usr/src/app/requirements.txt .
+RUN pip install mysqlclient
+RUN pip install --upgrade pip setuptools --no-cache /wheels/*
+RUN apt-get remove build-deps
+
+
 # copy project
 COPY . $APP_HOME
 
