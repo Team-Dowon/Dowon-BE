@@ -25,5 +25,5 @@ urlpatterns = [
     path('request', RequestListView.as_view()),
     path('request/<int:request_id>', RequestDetailView.as_view()),
 
-    path('test', dowonTest.as_view()),
+    path('sentence', SentenceToNormal.as_view()),
 ]
