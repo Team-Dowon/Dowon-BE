@@ -36,11 +36,9 @@ RUN mkdir $APP_HOME/media
 WORKDIR $APP_HOME
 
 # install dependencies
-COPY --from=builder /usr/src/app/wheels /wheels
-COPY --from=builder /usr/src/app/requirements.txt .
-RUN pip install mysqlclient
-RUN pip install --upgrade pip setuptools --no-cache /wheels/*
-RUN apt-get remove build-deps
+RUN python3 -m pip install --upgrade pip
+COPY ./requirements.txt .
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
 # copy project
 COPY . $APP_HOME
