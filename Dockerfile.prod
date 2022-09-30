@@ -37,7 +37,7 @@ RUN apt-get clean && \
 RUN mkdir -p /home/app
 
 # create the app user
-RUN addgroup -S app && adduser -S app -G app
+RUN addgroup -S app && useradd -S app -G app
 
 # create the appropriate directories
 ENV HOME=/home/app
