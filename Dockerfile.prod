@@ -36,7 +36,9 @@ RUN mkdir $APP_HOME/media
 WORKDIR $APP_HOME
 
 # install dependencies
-RUN apt-get update
+RUN apt-get update -y \
+    && apt-get install libsasl2-dev python-dev libldap2-dev libssl-dev libsnmp-dev
+RUN apt-get install libpq
 RUN apt-get update \
     && apt-get install --virtual build-deps gcc python3-dev musl-dev \
     && apt-get install --no-cache mariadb-dev \
