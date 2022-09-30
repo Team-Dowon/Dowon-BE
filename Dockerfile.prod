@@ -36,16 +36,16 @@ RUN mkdir $APP_HOME/media
 WORKDIR $APP_HOME
 
 # install dependencies
-RUN apt update && apt add libpq
-RUN apt update \
-    && apt add --virtual build-deps gcc python3-dev musl-dev \
-    && apt add --no-cache mariadb-dev \
-    && apt add --update --no-cache g++ gcc libxslt-dev
+RUN apt-get update && apt add libpq
+RUN apt-get update \
+    && apt-get add --virtual build-deps gcc python3-dev musl-dev \
+    && apt-get add --no-cache mariadb-dev \
+    && apt-get add --update --no-cache g++ gcc libxslt-dev
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
 RUN pip install mysqlclient
 RUN pip install --upgrade pip setuptools --no-cache /wheels/*
-RUN apt del build-deps
+RUN apt-get del build-deps
 
 # copy project
 COPY . $APP_HOME
