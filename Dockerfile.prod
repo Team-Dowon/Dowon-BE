@@ -3,13 +3,12 @@
 
 # pull official base image
 FROM ubuntu:latest as builder
+LABEL maintainer="ckm7907cb <ckm7907cb@gmail.com>"
 
-# set work directory
-WORKDIR /usr/src/app
-
-# set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV LANG=C.UTF-8
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && \
+  apt-get install -y --no-install-recommends tzdata g++ curl
 
 # install python
 RUN apt-get install -y python3-pip python3-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
@@ -17,6 +16,13 @@ RUN cd /usr/local/bin && \
   ln -s /usr/bin/python3 python && \
   ln -s /usr/bin/pip3 pip && \
   pip install --upgrade pip
+
+# set work directory
+WORKDIR /usr/src/app
+
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
 # install dependencies
 RUN python3 -m pip install --upgrade pip
