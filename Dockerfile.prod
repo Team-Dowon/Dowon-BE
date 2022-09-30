@@ -1,3 +1,25 @@
+# BUILDER #
+###########
+
+# pull official base image
+FROM ubuntu:latest as builder
+
+# set work directory
+WORKDIR /usr/src/app
+
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# install dependencies
+RUN pip install pip==21.3.1
+COPY ./requirements.txt .
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
+
+
+# FINAL #
+
+# pull official base image
 FROM ubuntu:latest
 LABEL maintainer="ckm7907cb <ckm7907cb@gmail.com>"
 
@@ -10,24 +32,12 @@ RUN apt-get update && \
 RUN apt-get install -y openjdk-8-jdk
 ENV JAVA_HOME="/usr/lib/jvm/java-1.8-openjdk"
 
-# set work directory
-WORKDIR /usr/src/app
-
-# set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-
 # install python
 RUN apt-get install -y python3-pip python3-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
 RUN cd /usr/local/bin && \
   ln -s /usr/bin/python3 python && \
   ln -s /usr/bin/pip3 pip && \
   pip install --upgrade pip
-
-# install dependencies
-RUN pip install pip==21.3.1
-COPY ./requirements.txt .
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
 # apt clean
 RUN apt-get clean && \
