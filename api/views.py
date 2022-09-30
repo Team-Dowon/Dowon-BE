@@ -400,10 +400,11 @@ class SentenceToNormal(APIView):
                     break
                 slanglist.append(slang.strip())
 
+            doslang = []
             # 반환된 형태소들 중 신조어 목록에 있는 단어와 일치하는 단어가 있으면 출력
             for extraction in morphs:
                 if str(extraction) in slanglist:
-                    print(str(extraction))
+                    doslang.append(str(extraction))
 
             # text에 적힌 문장 속 신조어들 이해하기 쉽게 변환
             normalize = okt.normalize(text)
@@ -417,7 +418,7 @@ class SentenceToNormal(APIView):
             # text에서 품사 정보 부착하여 반환
             # print(okt.pos(text))
 
-            return JsonResponse({'morphs': morphs, 'normalize': normalize}, status=200)
+            return JsonResponse({'morphs': morphs, 'doslang': doslang, 'normalize': normalize}, status=200)
         except Exception as e:
             return Response({
                 'message': str(e),
