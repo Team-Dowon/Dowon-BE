@@ -1,5 +1,5 @@
 FROM ubuntu:latest
-LABEL maintainer="roseline124 <guseod24@gmail.com>"
+LABEL maintainer="ckm7907cb <ckm7907cb@gmail.com>"
 
 ENV LANG=C.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
@@ -21,8 +21,37 @@ RUN cd /usr/local/bin && \
 RUN apt-get clean && \
   rm -rf /var/lib/apt/lists/*
 
-# copy resources
-COPY . .
+# create directory for the app user
+RUN mkdir -p /home/app
 
-# install python package
-RUN pip install -r requirements.txt
+# create the app user
+RUN addgroup -S app && adduser -S app -G app
+
+# create the appropriate directories
+ENV HOME=/home/app
+ENV APP_HOME=/home/app/web
+RUN mkdir $APP_HOME
+RUN mkdir $APP_HOME/static
+RUN mkdir $APP_HOME/media
+WORKDIR $APP_HOME
+
+# install dependencies
+RUN apk update && apk add libpq
+RUN apk update \
+    && apk add --virtual build-deps gcc python3-dev musl-dev \
+    && apk add --no-cache mariadb-dev \
+    && apk add --update --no-cache g++ gcc libxslt-dev
+COPY --from=builder /usr/src/app/wheels /wheels
+COPY --from=builder /usr/src/app/requirements.txt .
+RUN pip install mysqlclient
+RUN pip install --upgrade pip setuptools --no-cache /wheels/*
+RUN apk del build-deps
+
+# copy project
+COPY . $APP_HOME
+
+# chown all the files to the app user
+RUN chown -R app:app $APP_HOME
+
+# change to the app user
+USER app
