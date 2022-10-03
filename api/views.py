@@ -449,7 +449,7 @@ class test(APIView):
 
             DATA_CONFIGS = 'data_configs.json'
             prepro_configs = json.load(
-                open('./emo_module/CLEAN_DATA/' + DATA_CONFIGS, 'r'))  # TODO 데이터 경로 설정
+                open('./emo_module/CLEAN_DATA/' + DATA_CONFIGS, 'r', encoding='cp949'))  # TODO 데이터 경로 설정
 
             # TODO 데이터 경로 설정
             with open('./emo_module/CLEAN_DATA/tokenizer.pickle', 'rb') as handle:
