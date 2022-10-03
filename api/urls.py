@@ -26,4 +26,6 @@ urlpatterns = [
     path('request/<int:request_id>', RequestDetailView.as_view()),
 
     path('sentence', SentenceToNormal.as_view()),
+
+    path('test', test.as_view()),
 ]
