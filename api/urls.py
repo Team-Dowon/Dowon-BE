@@ -15,6 +15,7 @@ urlpatterns = [
 
     path('dictionary', DictionaryListView.as_view()), # 초성검색
     path('dictionary/<str:dictionary_name>', DictionaryDetailView.as_view()),
+    path('dictionary_cho', DictionaryChoView.as_view()),
 
     path('post', PostListView.as_view()),
     path('post/<int:post_id>', PostDetailView.as_view()),
@@ -26,4 +27,6 @@ urlpatterns = [
     path('request/<int:request_id>', RequestDetailView.as_view()),
 
     path('sentence', SentenceToNormal.as_view()),
+
+    path('test', test.as_view()),
 ]
