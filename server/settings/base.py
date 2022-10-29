@@ -177,8 +177,7 @@ SIMPLE_JWT = {
 
 
 # aws s3 setting
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'path/to/store/my/files/')
+DEFAULT_FILE_STORAGE = 'server.settings.storages.S3DefaultStorage'
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY')
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
 AWS_REGION = env('BUCKET_REGION')
