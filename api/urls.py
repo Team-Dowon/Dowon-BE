@@ -25,4 +25,6 @@ urlpatterns = [
 
     path('sentence', naturalML_views.SentenceToNormal.as_view()),
     path('test', naturalML_views.test.as_view()),
+
+    path('image', user_views.Image.as_view(), name='image'),
 ]

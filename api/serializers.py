@@ -87,3 +87,9 @@ class LoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['u_id', 'password']
+
+
+class PhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = test
+        fields = ('__all__')

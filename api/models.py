@@ -125,3 +125,9 @@ class Analyzer(models.Model):
 
     def __str__(self):
         return self.word
+
+class test(models.Model):
+    testfield = models.CharField(max_length=200)
+    photo = models.ImageField()
+    def __stf__(self):
+        return self.testfield

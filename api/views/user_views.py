@@ -110,3 +110,12 @@ class LogoutView(APIView):  # 로그아웃
             return Response({
                 'message': str(e),
             }, status=status.HTTP_400_BAD_REQUEST)
+
+
+class Image(APIView):
+    def post(self, request, format=None):
+        serializers = PhotoSerializer(data = request.data)
+        if serializers.is_valid():
+            serializers.save()
+            return Response(serializers.data, status=status.HTTP_201_CREATED)
+        return Response(serializers.data, status=status.HTTP_400_BAD_REQUEST)
