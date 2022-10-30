@@ -11,6 +11,7 @@ urlpatterns = [
     path('user/login', user_views.LoginView.as_view()),
     path('user/logout', user_views.LogoutView.as_view()),
     path('user', user_views.UserDetailView.as_view()),
+    path('user/profile', user_views.ProfileView.as_view()),
 
     path('dictionary', dictionary_views.DictionaryListView.as_view()), # 초성검색
     path('dictionary/<str:dictionary_name>', dictionary_views.DictionaryDetailView.as_view()),
@@ -25,6 +26,4 @@ urlpatterns = [
 
     path('sentence', naturalML_views.SentenceToNormal.as_view()),
     path('test', naturalML_views.test.as_view()),
-
-    path('image', user_views.Image.as_view(), name='image'),
 ]

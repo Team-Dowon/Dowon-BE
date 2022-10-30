@@ -40,6 +40,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.CharField(max_length=50, unique=True)
     u_id = models.CharField(max_length=15, unique=True)
     telephone = models.CharField(max_length=11)
+    profile_pic = models.ImageField(null=True, blank=True)
 
     is_admin = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -125,9 +126,3 @@ class Analyzer(models.Model):
 
     def __str__(self):
         return self.word
-
-class test(models.Model):
-    testfield = models.CharField(max_length=200)
-    photo = models.ImageField()
-    def __stf__(self):
-        return self.testfield

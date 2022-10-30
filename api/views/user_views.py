@@ -1,3 +1,4 @@
+from rest_framework.generics import UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 
 from api.serializers import *
@@ -112,10 +113,20 @@ class LogoutView(APIView):  # 로그아웃
             }, status=status.HTTP_400_BAD_REQUEST)
 
 
-class Image(APIView):
-    def post(self, request, format=None):
-        serializers = PhotoSerializer(data = request.data)
-        if serializers.is_valid():
-            serializers.save()
-            return Response(serializers.data, status=status.HTTP_201_CREATED)
-        return Response(serializers.data, status=status.HTTP_400_BAD_REQUEST)
+class ProfileView(UpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ProfileSerializer
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = User.objects.get(pk=request.user.id)
+        data = request.data
+        serializer = self.get_serializer(instance, data=data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

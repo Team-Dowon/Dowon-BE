@@ -58,6 +58,7 @@ class UserSerializer(serializers.ModelSerializer):
             'u_id',
             'nickname',
             'email',
+            'profile_pic',
         ]
 
 
@@ -89,7 +90,7 @@ class LoginSerializer(serializers.ModelSerializer):
         fields = ['u_id', 'password']
 
 
-class PhotoSerializer(serializers.ModelSerializer):
+class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = test
-        fields = ('__all__')
+        model = User
+        fields = ['profile_pic']
