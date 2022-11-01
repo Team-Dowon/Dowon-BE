@@ -24,7 +24,7 @@ RUN apt-get install -y python3-pip python3-dev libsasl2-dev libldap2-dev libssl-
 RUN cd /usr/local/bin && \
   ln -s /usr/bin/python3 python && \
   ln -s /usr/bin/pip3 pip && \
-  pip install --upgrade pip setuptools
+  pip install --upgrade pip
 
 # set work directory
 WORKDIR /usr/src/app
@@ -90,8 +90,7 @@ COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
 RUN pip install setuptools_rust docker-compose
 RUN pip install mysqlclient
-RUN pip install tokenizers
-RUN pip install --upgrade pip setuptools --no-cache /wheels/*
+RUN pip install --upgrade pip setuptools --no-cache --no-deps /wheels/*
 #RUN apt-get autoremove build-deps
 
 
