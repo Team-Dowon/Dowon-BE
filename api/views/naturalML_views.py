@@ -4,13 +4,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-import re
-import json
 from dowonpackage.tag import Okt
-from keras.utils import pad_sequences
-from keras.preprocessing.text import Tokenizer
-import pickle
-import keras
 
 
 class SentenceToNormal(APIView):
@@ -71,55 +65,146 @@ def sum_list(lst, res=0):
     return res
 
 
+import torch
+from torch import nn
+from torch.utils.data import Dataset
+import gluonnlp as nlp
+import numpy as np
+
+# kobert
+from kobert.utils import get_tokenizer
+from kobert.pytorch_kobert import get_pytorch_kobert_model
+
+# BERT 모델, Vocabulary 불러오기 필수
+bertmodel, vocab = get_pytorch_kobert_model()
+
+
+# KoBERT에 입력될 데이터셋 정리
+class BERTDataset(Dataset):
+    def __init__(self, dataset, sent_idx, label_idx, bert_tokenizer, max_len,
+                 pad, pair):
+        transform = nlp.data.BERTSentenceTransform(
+            bert_tokenizer, max_seq_length=max_len, pad=pad, pair=pair)
+
+        self.sentences = [transform([i[sent_idx]]) for i in dataset]
+        self.labels = [np.int32(i[label_idx]) for i in dataset]
+
+    def __getitem__(self, i):
+        return (self.sentences[i] + (self.labels[i],))
+
+    def __len__(self):
+        return (len(self.labels))
+
+    # 모델 정의
+
+
+class BERTClassifier(nn.Module):  ## 클래스를 상속
+    def __init__(self,
+                 bert,
+                 hidden_size=768,
+                 num_classes=6,  ##클래스 수 조정##
+                 dr_rate=None):
+        super(BERTClassifier, self).__init__()
+        self.bert = bert
+        self.dr_rate = dr_rate
+
+        self.classifier = nn.Linear(hidden_size, num_classes)
+        if dr_rate:
+            self.dropout = nn.Dropout(p=dr_rate)
+
+    def gen_attention_mask(self, token_ids, valid_length):
+        attention_mask = torch.zeros_like(token_ids)
+        for i, v in enumerate(valid_length):
+            attention_mask[i][:v] = 1
+        return attention_mask.float()
+
+    def forward(self, token_ids, valid_length, segment_ids):
+        attention_mask = self.gen_attention_mask(token_ids, valid_length)
+
+        _, pooler = self.bert(input_ids=token_ids, token_type_ids=segment_ids.long(),
+                              attention_mask=attention_mask.float().to(token_ids.device))
+        if self.dr_rate:
+            out = self.dropout(pooler)
+        return self.classifier(out)
+
+
+# Setting parameters
+max_len = 64
+batch_size = 32
+warmup_ratio = 0.1
+num_epochs = 20
+max_grad_norm = 1
+log_interval = 100
+learning_rate = 5e-5
+
+device = torch.device('cpu')
+model = BERTClassifier(bertmodel, dr_rate=0.5).to(device)
+model.load_state_dict(
+    torch.load('./SentimentAnalysisKOBert_StateDict.pt', map_location='cpu'))
+
+# 토큰화
+tokenizer = get_tokenizer()
+tok = nlp.data.BERTSPTokenizer(tokenizer, vocab, lower=False)
+
+
+def new_softmax(a):
+    c = np.max(a)  # 최댓값
+    exp_a = np.exp(a - c)  # 각각의 원소에 최댓값을 뺀 값에 exp를 취한다. (이를 통해 overflow 방지)
+    sum_exp_a = np.sum(exp_a)
+    y = (exp_a / sum_exp_a) * 100
+    return np.round(y, 3)
+
+
+# 예측 모델 설정
+def predict(predict_sentence):
+    data = [predict_sentence, '0']
+    dataset_another = [data]
+
+    another_test = BERTDataset(dataset_another, 0, 1, tok, max_len, True, False)
+    test_dataloader = torch.utils.data.DataLoader(another_test, batch_size=batch_size, num_workers=5)
+
+    model.eval()
+
+    for batch_id, (token_ids, valid_length, segment_ids, label) in enumerate(test_dataloader):
+        token_ids = token_ids.long().to(device)
+        segment_ids = segment_ids.long().to(device)
+
+        valid_length = valid_length
+
+        out = model(token_ids, valid_length, segment_ids)
+
+        for i in out:
+            logits = i
+            logits = logits.detach().cpu().numpy()
+            probability = []
+            logits = np.round(new_softmax(logits), 3).tolist()
+            for logit in logits:
+                probability.append(np.round(logit, 3))
+
+            if np.argmax(logits) == 0:
+                emotion = "기쁨"
+            elif np.argmax(logits) == 1:
+                emotion = "불안"
+            elif np.argmax(logits) == 2:
+                emotion = '당황'
+            elif np.argmax(logits) == 3:
+                emotion = '슬픔'
+            elif np.argmax(logits) == 4:
+                emotion = '분노'
+            elif np.argmax(logits) == 5:
+                emotion = '상처'
+
+            probability.append(emotion)
+    return probability
+
+
+# 사용자 정보
 class test(APIView):
     def post(self, request):
-        try:
-            okt = Okt()
-            tokenizer = Tokenizer()
+        sentence = request.data['sentence']
+        s_predict = predict(sentence)
+        emotion = s_predict[6]
+        s_predict.pop()
+        percent = max(s_predict)
 
-            DATA_CONFIGS = 'data_configs.json'
-            prepro_configs = json.load(
-                open('./emo_module/CLEAN_DATA/' + DATA_CONFIGS, 'r', encoding='cp949'))  # TODO 데이터 경로 설정
-
-            # TODO 데이터 경로 설정
-            with open('./emo_module/CLEAN_DATA/tokenizer.pickle', 'rb') as handle:
-                word_vocab = pickle.load(handle)
-
-            prepro_configs['vocab'] = word_vocab
-
-            tokenizer.fit_on_texts(word_vocab)
-
-            MAX_LENGTH = 8  # 문장최대길이
-
-            while True:
-                sentence = request.data['sentence']
-                if sentence == '끝':
-                    break
-                sentence = re.sub(r'[^ㄱ-ㅎㅏ-ㅣ가-힣\\s ]', '', sentence)
-                stopwords = ['은', '는', '이', '가', '하', '아', '것', '들', '의', '있', '되', '수', '보', '주', '등',
-                             '한']  # 불용어 추가할 것이 있으면 이곳에 추가
-                sentence = okt.morphs(sentence, stem=True)  # 토큰화
-                sentence = [word for word in sentence if not word in stopwords]  # 불용어 제거
-                vector = tokenizer.texts_to_sequences(sentence)
-                pad_new = pad_sequences(vector, maxlen=MAX_LENGTH)  # 패딩
-
-                # 학습한 모델 불러오기
-                model = keras.models.load_model('./emo_module/my_models/')  # TODO 데이터 경로 설정
-                model.load_weights('./emo_module/DATA_OUT/cnn_classifier_kr/weights.h5')  # TODO 데이터 경로 설정
-                predictions = model.predict(pad_new)
-                print(predictions)
-                predictions = float(sum_list(predictions) / len(predictions))
-                # predictions = float(predictions.squeeze(-1)[1])
-
-                if (predictions > 0.5):
-                    print("{:.2f}% 확률로 긍정 리뷰입니다.\n".format(predictions * 100))
-                    emotion = '긍정'
-                else:
-                    print("{:.2f}% 확률로 부정 리뷰입니다.\n".format((1 - predictions) * 100))
-                    emotion = '부정'
-
-                return JsonResponse({'예측값': emotion}, status=200)
-        except Exception as e:
-            return Response({
-                'message': str(e),
-            }, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({'예측값': emotion, '확률': percent}, status=200)
