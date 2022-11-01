@@ -15,7 +15,7 @@ RUN apt-get clean
 RUN apt-get update
 
 # install python
-RUN apt-get install -y python3-pip python3-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
+RUN apt-get install -y python3-pip python3-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev git
 RUN cd /usr/local/bin && \
   ln -s /usr/bin/python3 python && \
   ln -s /usr/bin/pip3 pip && \
