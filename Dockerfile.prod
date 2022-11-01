@@ -11,8 +11,8 @@ RUN apt-get update && \
   apt-get install -y --no-install-recommends tzdata g++ curl
 
 # install RUST
-RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
-RUN export PATH="$HOME/.cargo/bin:$PATH"
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
 
 # fetch error fix
 RUN apt-get clean
@@ -51,8 +51,8 @@ RUN apt-get update && \
   apt-get install -y --no-install-recommends tzdata g++ curl
 
 # install RUST
-RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
-RUN export PATH="$HOME/.cargo/bin:$PATH"
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
 
 # install java
 RUN apt-get install -y openjdk-8-jdk
