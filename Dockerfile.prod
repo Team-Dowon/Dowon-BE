@@ -15,7 +15,7 @@ RUN apt-get clean
 RUN apt-get update
 
 #install git and cargo(RUST)
-RUN apt-get install -y git cargo
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y git cargo
 
 # install python
 RUN apt-get install -y python3-pip python3-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
@@ -53,7 +53,7 @@ RUN apt-get install -y openjdk-8-jdk
 ENV JAVA_HOME="/usr/lib/jvm/java-1.8-openjdk"
 
 #install git and cargo(RUST)
-RUN apt-get install -y git cargo
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y git cargo
 
 # install python
 RUN apt-get install -y python3-pip python3-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
