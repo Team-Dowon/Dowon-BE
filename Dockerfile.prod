@@ -10,12 +10,13 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
   apt-get install -y --no-install-recommends tzdata g++ curl
 
-# fetch error fix
-RUN apt-get clean
+# Update new packages
 RUN apt-get update
 
-#install git and cargo(RUST)
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y git cargo
+# Get Rust
+RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
+
+RUN echo 'source $HOME/.cargo/env' >> $HOME/.bashrc
 
 # install python
 RUN apt-get install -y python3-pip python3-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
@@ -48,12 +49,17 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
   apt-get install -y --no-install-recommends tzdata g++ curl
 
+# Update new packages
+RUN apt-get update
+
+# Get Rust
+RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
+
+RUN echo 'source $HOME/.cargo/env' >> $HOME/.bashrc
+
 # install java
 RUN apt-get install -y openjdk-8-jdk
 ENV JAVA_HOME="/usr/lib/jvm/java-1.8-openjdk"
-
-#install git and cargo(RUST)
-RUN apt-get install -y rustc cargo
 
 # install python
 RUN apt-get install -y python3-pip python3-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
