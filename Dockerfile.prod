@@ -86,6 +86,8 @@ COPY --from=builder /usr/src/app/requirements.txt .
 RUN pip install setuptools_rust docker-compose
 RUN pip install mysqlclient
 RUN pip install --upgrade pip setuptools --no-cache /wheels/*
+RUN pip install --upgrade pip setuptools --no-catche --no-deps kobert @ git+https://git@github.com/SKTBrain/KoBERT.git@47a69af87928fc24e20f571fe10c3cc9dd9af9a3
+RUN pip install --upgrade pip setuptools --no-catche --no-deps mxnet==1.8.0.post0
 #RUN apt-get autoremove build-deps
 
 
