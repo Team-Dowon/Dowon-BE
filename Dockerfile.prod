@@ -85,7 +85,7 @@ COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
 RUN pip install setuptools_rust docker-compose
 RUN pip install mysqlclient
-RUN pip install --upgrade pip setuptools --no-cache --no-deps /wheels/*
+RUN pip install --upgrade pip setuptools --no-cache /wheels/*
 #RUN apt-get autoremove build-deps
 
 
