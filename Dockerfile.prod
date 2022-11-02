@@ -49,6 +49,10 @@ RUN apt-get update && \
 RUN apt-get install -y openjdk-8-jdk
 ENV JAVA_HOME="/usr/lib/jvm/java-1.8-openjdk"
 
+# fetch error fix
+RUN apt-get clean
+RUN apt-get update
+
 # install python
 RUN apt-get install -y python3-pip python3-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev git cargo
 RUN cd /usr/local/bin && \
