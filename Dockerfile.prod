@@ -14,6 +14,9 @@ RUN apt-get update && \
 RUN apt-get clean
 RUN apt-get update
 
+#install git and cargo(RUST)
+RUN apt-get install -y git cargo
+
 # install python
 RUN apt-get install -y python3-pip python3-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
 RUN cd /usr/local/bin && \
