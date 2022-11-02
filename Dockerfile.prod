@@ -32,7 +32,9 @@ ENV PYTHONUNBUFFERED 1
 # install dependencies
 RUN python3 -m pip install --upgrade pip
 COPY ./requirements.txt .
+COPY ./requirements2.txt .
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels2 -r requirements2.txt
 
 
 # FINAL #
@@ -83,11 +85,12 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
+COPY --from=builder /usr/src/app/wheels /wheels2
+COPY --from=builder /usr/src/app/requirements2.txt .
 RUN pip install setuptools_rust docker-compose
 RUN pip install mysqlclient
 RUN pip install --upgrade pip setuptools --no-cache /wheels/*
-RUN pip install --upgrade pip setuptools --no-cache --no-deps kobert @ git+https://git@github.com/SKTBrain/KoBERT.git@47a69af87928fc24e20f571fe10c3cc9dd9af9a3
-RUN pip install --upgrade pip setuptools --no-cache --no-deps mxnet==1.8.0.post0
+RUN pip install --upgrade pip setuptools --no-cache --no-deps /wheels2/*
 #RUN apt-get autoremove build-deps
 
 
