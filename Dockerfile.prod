@@ -13,13 +13,8 @@ RUN apt-get update && \
 # Update new packages
 RUN apt-get update
 
-# Get Rust
-RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
-
-RUN echo 'source $HOME/.cargo/env' >> $HOME/.bashrc
-
-# Update new packages
-RUN apt-get update
+# Get Rust -Cargo
+RUN apt-get install -y cargo
 
 # install python
 RUN apt-get install -y python3-pip python3-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
@@ -55,13 +50,8 @@ RUN apt-get update && \
 # Update new packages
 RUN apt-get update
 
-# Get Rust
-RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
-
-RUN echo 'source $HOME/.cargo/env' >> $HOME/.bashrc
-
-# Update new packages
-RUN apt-get update
+# Get Rust -Cargo
+RUN apt-get install -y cargo
 
 # install java
 RUN apt-get install -y openjdk-8-jdk
