@@ -26,7 +26,7 @@ class RequestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Request
-        fields = ('id', 'user_nickname', 'title', 'content', 'name', 'date')
+        fields = ('id', 'user_nickname', 'title', 'content', 'name', 'date', 'user_profile_pic')
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -35,7 +35,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('id', 'user_nickname', 'title', 'content', 'date')
+        fields = ('id', 'user_nickname', 'title', 'content', 'date', 'user_profile_pic')
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -44,7 +44,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('id', 'post', 'user_nickname', 'content', 'date')
+        fields = ('id', 'post', 'user_nickname', 'content', 'date', 'user_profile_pic')
 
 
 class AnalyzerSerializer(serializers.ModelSerializer):
