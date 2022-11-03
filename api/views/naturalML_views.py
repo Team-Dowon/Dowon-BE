@@ -140,7 +140,7 @@ learning_rate = 5e-5
 device = torch.device('cpu')
 model = BERTClassifier(bertmodel, dr_rate=0.5).to(device)
 model.load_state_dict(
-    torch.load('./SentimentAnalysisKOBert_StateDict.pt', map_location='cpu'))
+    torch.load('/root/model/SentimentAnalysisKOBert_StateDict.pt', map_location='cpu'))
 
 # 토큰화
 tokenizer = get_tokenizer()

@@ -8,9 +8,10 @@ LABEL maintainer="ckm7907cb <ckm7907cb@gmail.com>"
 ENV LANG=C.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
-  apt-get install -y --no-install-recommends tzdata g++ curl
+  apt-get install -y --no-install-recommends tzdata g++ curl git cargo
 
 # install python
+RUN apt-get update
 RUN apt-get install -y python3-pip python3-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
 RUN cd /usr/local/bin && \
   ln -s /usr/bin/python3 python && \
@@ -24,10 +25,16 @@ WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
+#install model
+RUN mkdir /root/model
+COPY ./SentimentAnalysisKOBert_StateDict.pt /root/model
+
 # install dependencies
 RUN python3 -m pip install --upgrade pip
 COPY ./requirements.txt .
+COPY ./requirements2.txt .
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels2 -r requirements2.txt
 
 
 # FINAL #
@@ -39,18 +46,19 @@ LABEL maintainer="ckm7907cb <ckm7907cb@gmail.com>"
 ENV LANG=C.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
-  apt-get install -y --no-install-recommends tzdata g++ curl
+  apt-get install -y --no-install-recommends tzdata g++ curl git cargo
 
 # install java
 RUN apt-get install -y openjdk-8-jdk
 ENV JAVA_HOME="/usr/lib/jvm/java-1.8-openjdk"
 
 # install python
+RUN apt-get update
 RUN apt-get install -y python3-pip python3-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
 RUN cd /usr/local/bin && \
   ln -s /usr/bin/python3 python && \
   ln -s /usr/bin/pip3 pip && \
-  pip install --upgrade pip
+  pip install --upgrade pip setuptools
 
 # apt clean
 RUN apt-get clean && \
@@ -73,9 +81,12 @@ WORKDIR $APP_HOME
 
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
+COPY --from=builder /usr/src/app/wheels /wheels2
+COPY --from=builder /usr/src/app/requirements2.txt .
 RUN pip install mysqlclient
 RUN pip install --upgrade pip setuptools --no-cache /wheels/*
-#RUN apt-get autoremove build-deps
+RUN pip install --upgrade pip setuptools --no-cache --no-deps /wheels2/*
+RUN apt-get autoremove build-deps
 
 
 # copy project
