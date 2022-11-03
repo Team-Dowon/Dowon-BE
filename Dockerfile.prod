@@ -8,7 +8,7 @@ LABEL maintainer="ckm7907cb <ckm7907cb@gmail.com>"
 ENV LANG=C.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
-  apt-get install -y --no-install-recommends tzdata g++ curl
+  apt-get install -y --no-install-recommends tzdata g++ curl git cargo
 
 # fetch error fix
 RUN apt-get clean
@@ -43,7 +43,7 @@ LABEL maintainer="ckm7907cb <ckm7907cb@gmail.com>"
 ENV LANG=C.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
-  apt-get install -y --no-install-recommends tzdata g++ curl
+  apt-get install -y --no-install-recommends tzdata g++ curl git cargo
 
 # install java
 RUN apt-get install -y openjdk-8-jdk
