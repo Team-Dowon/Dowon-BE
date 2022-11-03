@@ -8,10 +8,7 @@ LABEL maintainer="ckm7907cb <ckm7907cb@gmail.com>"
 ENV LANG=C.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
-  apt-get install -y --no-install-recommends tzdata g++ curl
-
-# Update new packages
-RUN apt-get update
+  apt-get install -y --no-install-recommends tzdata g++ curl cargo
 
 # install python
 RUN apt-get install -y python3-pip python3-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
@@ -42,11 +39,7 @@ LABEL maintainer="ckm7907cb <ckm7907cb@gmail.com>"
 ENV LANG=C.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
-  apt-get install -y --no-install-recommends tzdata g++ curl
-
-# install system dependencies
-RUN apk-get update && apt-get --no-cache install \
-    libressl-dev libffi-dev gcc musl-dev openssl-dev cargo
+  apt-get install -y --no-install-recommends tzdata g++ curl cargo
 
 # install java
 RUN apt-get install -y openjdk-8-jdk
