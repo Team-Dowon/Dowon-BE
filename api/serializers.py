@@ -22,6 +22,7 @@ class KDictionarySerializer(serializers.ModelSerializer):
 
 class RequestSerializer(serializers.ModelSerializer):
     user_nickname = serializers.CharField(source='user.nickname')
+    user_profile_pic = serializers.CharField(source='user.profile_pic')
 
     class Meta:
         model = Request
@@ -30,6 +31,7 @@ class RequestSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     user_nickname = serializers.CharField(source='user.nickname')
+    user_profile_pic = serializers.CharField(source='user.profile_pic')
 
     class Meta:
         model = Post
@@ -38,6 +40,7 @@ class PostSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     user_nickname = serializers.CharField(source='user.nickname')
+    user_profile_pic = serializers.CharField(source='user.profile_pic')
 
     class Meta:
         model = Comment
