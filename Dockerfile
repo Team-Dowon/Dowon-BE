@@ -26,8 +26,8 @@ RUN cd /usr/local/bin && \
 
 # install dependencies
 RUN pip install pip==21.3.1
-COPY ./requirements.txt .
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
+COPY requirements2.txt .
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements2.txt
 
 # apt clean
 RUN apt-get clean && \
