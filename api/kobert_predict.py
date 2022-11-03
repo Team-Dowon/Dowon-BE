@@ -68,7 +68,7 @@ class bert_predict(object):
         device = torch.device('cpu')
         model = BERTClassifier(bertmodel, dr_rate=0.5).to(device)
         model.load_state_dict(
-            torch.load('/root/model/SentimentAnalysisKOBert_StateDict.pt', map_location='cpu'))
+            torch.load('./SentimentAnalysisKOBert_StateDict.pt', map_location='cpu'))
 
         # Setting parameters
         max_len = 64
