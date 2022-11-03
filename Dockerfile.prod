@@ -28,6 +28,8 @@ ENV PYTHONUNBUFFERED 1
 #install model
 RUN mkdir /root/model
 COPY ./SentimentAnalysisKOBert_StateDict.pt /root/model
+RUN mkdir .cache
+COPY .cache .cache
 
 # install dependencies
 RUN python3 -m pip install --upgrade pip
