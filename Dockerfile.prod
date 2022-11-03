@@ -13,9 +13,6 @@ RUN apt-get update && \
 # Update new packages
 RUN apt-get update
 
-# Get Rust -Cargo
-RUN apt-get install -y cargo
-
 # install python
 RUN apt-get install -y python3-pip python3-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
 RUN cd /usr/local/bin && \
@@ -47,11 +44,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
   apt-get install -y --no-install-recommends tzdata g++ curl
 
-# Update new packages
-RUN apt-get update
-
-# Get Rust -Cargo
-RUN apt-get install -y cargo
+# install system dependencies
+RUN apk-get update && apt-get --no-cache install \
+    libressl-dev libffi-dev gcc musl-dev openssl-dev cargo
 
 # install java
 RUN apt-get install -y openjdk-8-jdk
