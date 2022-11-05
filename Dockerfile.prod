@@ -11,7 +11,6 @@ RUN apt-get update && \
   apt-get install -y --no-install-recommends tzdata g++ curl git cargo
 
 # install python
-RUN apt-get update
 RUN apt-get install -y software-properties-common && add-apt-repository ppa:deadsnakes/ppa && apt-get update && apt-get install -y \
     python3.8 \
     python3-pip python3.8-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
@@ -55,7 +54,6 @@ RUN apt-get install -y openjdk-8-jdk
 ENV JAVA_HOME="/usr/lib/jvm/java-1.8-openjdk"
 
 # install python
-RUN apt-get update
 RUN apt-get install -y software-properties-common && add-apt-repository ppa:deadsnakes/ppa && apt-get update && apt-get install -y \
     python3.8 \
     python3-pip python3.8-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
@@ -95,6 +93,8 @@ COPY . $APP_HOME
 
 # chown all the files to the app user
 RUN chown -R app:app $APP_HOME
+
+RUN python -V
 
 # change to the app user
 USER app
