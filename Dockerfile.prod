@@ -15,6 +15,7 @@ RUN apt-get install -y software-properties-common && add-apt-repository ppa:dead
     python3.8 \
     python3.8-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+RUN apt-get update
 RUN python3.8 get-pip.py
 RUN cd /usr/local/bin && \
   ln -s /usr/bin/python3 python && \
