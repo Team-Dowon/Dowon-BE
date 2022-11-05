@@ -16,6 +16,7 @@ RUN apt-get install -y software-properties-common && add-apt-repository ppa:dead
     python3.8-dev python3-pip libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
 RUN cd /usr/local/bin && \
   ln -s /usr/bin/python3.8 python && \
+  ln -s /usr/bin/python3.8 python3 && \
   ln -s /usr/bin/pip3 pip && \
   pip install --upgrade pip
 
@@ -59,12 +60,9 @@ RUN apt-get install -y software-properties-common && add-apt-repository ppa:dead
     python3.8-dev python3-pip libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
 RUN cd /usr/local/bin && \
   ln -s /usr/bin/python3.8 python && \
+  ln -s /usr/bin/python3.8 python3 && \
   ln -s /usr/bin/pip3 pip && \
   pip install --upgrade pip setuptools
-
-#RUN whereis python3
-#RUN whereis python3.8
-#RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.8 1
 
 # apt clean
 RUN apt-get clean && \
@@ -97,11 +95,6 @@ COPY . $APP_HOME
 
 # chown all the files to the app user
 RUN chown -R app:app $APP_HOME
-
-RUN apt-get update
-RUN python -V
-RUN python3 -V
-RUN python3.8 -V
 
 # change to the app user
 USER app
