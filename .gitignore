@@ -75,6 +75,7 @@ cover/
 # Flask stuff:
 instance/
 .webassets-cache
+.cache
 
 # Scrapy stuff:
 .scrapy
@@ -162,6 +163,9 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# Bert Model
+SentimentAnalysisKOBert_StateDict.pt
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
