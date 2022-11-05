@@ -12,7 +12,9 @@ RUN apt-get update && \
 
 # install python
 RUN apt-get update
-RUN apt-get install -y python3.8 python3-pip python3.8-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
+RUN RUN apt-get install -y software-properties-common && sudo add-apt-repository ppa:deadsnakes/ppa && apt-get update && apt-get install -y \
+    python3.8 \
+    python3-pip python3.8-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
 RUN cd /usr/local/bin && \
   ln -s /usr/bin/python3 python && \
   ln -s /usr/bin/pip3 pip && \
@@ -54,7 +56,9 @@ ENV JAVA_HOME="/usr/lib/jvm/java-1.8-openjdk"
 
 # install python
 RUN apt-get update
-RUN apt-get install -y python3.8 python3-pip python3.8-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
+RUN RUN apt-get install -y software-properties-common && sudo add-apt-repository ppa:deadsnakes/ppa && apt-get update && apt-get install -y \
+    python3.8 \
+    python3-pip python3.8-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
 RUN cd /usr/local/bin && \
   ln -s /usr/bin/python3 python && \
   ln -s /usr/bin/pip3 pip && \
