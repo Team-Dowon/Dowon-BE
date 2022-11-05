@@ -62,6 +62,9 @@ RUN cd /usr/local/bin && \
   ln -s /usr/bin/pip3 pip && \
   pip install --upgrade pip setuptools
 
+RUN update-alternatives --install /usr/bin/python python /usr/local/bin/python3.8 1
+RUN whereis python3
+
 # apt clean
 RUN apt-get clean && \
   rm -rf /var/lib/apt/lists/*
