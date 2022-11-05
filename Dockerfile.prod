@@ -13,10 +13,7 @@ RUN apt-get update && \
 # install python
 RUN apt-get install -y software-properties-common && add-apt-repository ppa:deadsnakes/ppa && apt-get update && apt-get install -y \
     python3.8 \
-    python3.8-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
-RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-RUN apt-get update
-RUN python3.8 get-pip.py
+    python3.8-dev python3-pip libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
 RUN cd /usr/local/bin && \
   ln -s /usr/bin/python3 python && \
   ln -s /usr/bin/pip3 pip && \
@@ -59,9 +56,7 @@ ENV JAVA_HOME="/usr/lib/jvm/java-1.8-openjdk"
 # install python
 RUN apt-get install -y software-properties-common && add-apt-repository ppa:deadsnakes/ppa && apt-get update && apt-get install -y \
     python3.8 \
-    python3.8-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
-RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-RUN python3.8 get-pip.py
+    python3.8-dev python3-pip libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
 RUN cd /usr/local/bin && \
   ln -s /usr/bin/python3 python && \
   ln -s /usr/bin/pip3 pip && \
@@ -99,7 +94,10 @@ COPY . $APP_HOME
 # chown all the files to the app user
 RUN chown -R app:app $APP_HOME
 
+RUN apt-get update
 RUN python -V
+RUN python3 -V
+RUN python3.8 -V
 
 # change to the app user
 USER app
