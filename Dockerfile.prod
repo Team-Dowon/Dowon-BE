@@ -99,7 +99,6 @@ COPY . $APP_HOME
 RUN chown -R app:app $APP_HOME
 
 RUN apt-get update
-RUN python -V
 RUN python3 -V
 RUN python3.8 -V
 
