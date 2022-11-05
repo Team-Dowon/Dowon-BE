@@ -64,7 +64,7 @@ RUN cd /usr/local/bin && \
 
 RUN whereis python3
 RUN whereis python3.8
-RUN update-alternatives --install /usr/bin/python python /usr/local/bin/python3.8 1
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.8 1
 
 # apt clean
 RUN apt-get clean && \
