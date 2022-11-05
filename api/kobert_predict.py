@@ -6,9 +6,6 @@ import gluonnlp as nlp
 import numpy as np
 from torch.utils.data import Dataset
 
-from kobert.pytorch_kobert import get_pytorch_kobert_model
-from kobert.utils import get_tokenizer
-
 
 # KoBERT에 입력될 데이터셋 정리
 class BERTDataset(Dataset):
@@ -63,6 +60,8 @@ class bert_predict(object):
 
     # 예측 모델 설정
     def area(self):
+        from kobert.pytorch_kobert import get_pytorch_kobert_model
+        from kobert.utils import get_tokenizer
         # BERT 모델, Vocabulary 불러오기 필수
         bertmodel, vocab = get_pytorch_kobert_model()
 
