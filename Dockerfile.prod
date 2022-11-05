@@ -13,12 +13,14 @@ RUN apt-get update && \
 # install python
 RUN apt-get install -y software-properties-common && add-apt-repository ppa:deadsnakes/ppa && apt-get update && apt-get install -y \
     python3.8 \
-    python3.8-dev python3-pip python3-distutils libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
+    python3.8-dev
 RUN cd /usr/local/bin && \
   ln -s /usr/bin/python3.8 python && \
-  ln -s /usr/bin/python3.8 python3 && \
-  ln -s /usr/bin/pip3 pip && \
-  pip install --upgrade pip
+  ln -s /usr/bin/python3.8 python3
+RUN apt-get update && apt-get install -y \
+    python3-pip python3-distutils libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
+RUN ln -s /usr/bin/pip3 pip && \
+  pip install --upgrade pip setuptools
 
 # set work directory
 WORKDIR /usr/src/app
@@ -57,11 +59,13 @@ ENV JAVA_HOME="/usr/lib/jvm/java-1.8-openjdk"
 # install python
 RUN apt-get install -y software-properties-common && add-apt-repository ppa:deadsnakes/ppa && apt-get update && apt-get install -y \
     python3.8 \
-    python3.8-dev python3-pip python3-distutils libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
+    python3.8-dev
 RUN cd /usr/local/bin && \
   ln -s /usr/bin/python3.8 python && \
-  ln -s /usr/bin/python3.8 python3 && \
-  ln -s /usr/bin/pip3 pip && \
+  ln -s /usr/bin/python3.8 python3
+RUN apt-get update && apt-get install -y \
+    python3-pip python3-distutils libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
+RUN ln -s /usr/bin/pip3 pip && \
   pip install --upgrade pip setuptools
 
 # apt clean
