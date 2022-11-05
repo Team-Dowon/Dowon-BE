@@ -85,6 +85,7 @@ WORKDIR $APP_HOME
 
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
+RUN python3 -m pip install --upgrade pip
 RUN pip install mysqlclient
 RUN pip install --upgrade pip setuptools --no-cache --no-deps /wheels/*
 #RUN apt-get autoremove build-deps
