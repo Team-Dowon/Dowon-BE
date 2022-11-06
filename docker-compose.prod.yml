@@ -6,7 +6,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile.prod
-    command: gunicorn server.wsgi:application --bind 0.0.0.0:8000 --daemon -w 4 --timeout 120
+    command: gunicorn server.wsgi:application --bind 0.0.0.0:8000 --timeout 120
     environment:
       DJANGO_SETTINGS_MODULE: server.settings.production
     env_file:
