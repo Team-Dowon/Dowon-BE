@@ -69,7 +69,7 @@ class bert_predict(object):
     def area(self):
         device = torch.device('cpu')
         # BERT 모델, Vocabulary 불러오기 필수
-        model_path = os.path.join(os.path.expanduser('.cache'), "kobert_from_pretrained")
+        model_path = os.path.join(os.path.expanduser('kobert'), "kobert_from_pretrained" )
         bertmodel = BertModel.from_pretrained(model_path, return_dict=False)
         vocab_path = get_tokenizer()
         vocab = nlp.vocab.BERTVocab.from_sentencepiece(
