@@ -100,8 +100,8 @@ RUN curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=`awk 
  -P /home/app/web/.cache
 
 RUN curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=`awk \
- '/download/ {print $NF}' ./cookie`&id=1jV67v6GGL2tNulDbuo9q-7oh6DZImrUI" -o kobert_news_wiki_ko_cased-1087f8699e.spiece \
- -P /home/app/web/.cache
+ '/download/ {print $NF}' ./cookie`&id=1V2XbsuMq4g-IFP6wIzkWlKn5tVrfKsL9" -o pytorch_model.bin \
+ -P /home/app/web/.cache/kobert_from_pretrained
 
 # change to the app user
 USER app
