@@ -8,16 +8,15 @@ LABEL maintainer="ckm7907cb <ckm7907cb@gmail.com>"
 ENV LANG=C.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
-  apt-get install -y --no-install-recommends tzdata g++ curl
-
-# fetch error fix
-RUN apt-get clean
-RUN apt-get update
+  apt-get install -y --no-install-recommends tzdata g++ curl git cargo
 
 # install python
-RUN apt-get install -y python3-pip python3-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
+RUN apt-get install -y software-properties-common && add-apt-repository ppa:deadsnakes/ppa && apt-get update && apt-get install -y \
+    python3.8 \
+    python3.8-dev python3-pip python3.8-distutils libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
 RUN cd /usr/local/bin && \
-  ln -s /usr/bin/python3 python && \
+  ln -s /usr/bin/python3.8 python && \
+  ln -s /usr/bin/python3.8 python3 && \
   ln -s /usr/bin/pip3 pip && \
   pip install --upgrade pip
 
@@ -43,18 +42,21 @@ LABEL maintainer="ckm7907cb <ckm7907cb@gmail.com>"
 ENV LANG=C.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
-  apt-get install -y --no-install-recommends tzdata g++ curl
+  apt-get install -y --no-install-recommends tzdata g++ curl git cargo
 
 # install java
 RUN apt-get install -y openjdk-8-jdk
 ENV JAVA_HOME="/usr/lib/jvm/java-1.8-openjdk"
 
 # install python
-RUN apt-get install -y python3-pip python3-dev libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
+RUN apt-get install -y software-properties-common && add-apt-repository ppa:deadsnakes/ppa && apt-get update && apt-get install -y \
+    python3.8 \
+    python3.8-dev python3-pip python3.8-distutils libsasl2-dev libldap2-dev libssl-dev libsnmp-dev libmysqlclient-dev
 RUN cd /usr/local/bin && \
-  ln -s /usr/bin/python3 python && \
+  ln -s /usr/bin/python3.8 python && \
+  ln -s /usr/bin/python3.8 python3 && \
   ln -s /usr/bin/pip3 pip && \
-  pip install --upgrade pip
+  pip install --upgrade pip setuptools
 
 # apt clean
 RUN apt-get clean && \
@@ -77,16 +79,27 @@ WORKDIR $APP_HOME
 
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
+RUN python3 -m pip install --upgrade pip
 RUN pip install mysqlclient
-RUN pip install --upgrade pip setuptools --no-cache /wheels/*
+RUN pip install --upgrade pip setuptools --no-cache --no-deps /wheels/*
 #RUN apt-get autoremove build-deps
-
 
 # copy project
 COPY . $APP_HOME
 
 # chown all the files to the app user
 RUN chown -R app:app $APP_HOME
+
+# download Bert model
+RUN curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=`awk \
+ '/download/ {print $NF}' ./cookie`&id=1as_8buFXZN1t8wHQ6yd2voAoiw72lFF-" -o SentimentAnalysisKOBert_StateDict.pt \
+ -P /home/app/web
+
+RUN curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=`awk \
+ '/download/ {print $NF}' ./cookie`&id=1V2XbsuMq4g-IFP6wIzkWlKn5tVrfKsL9" -o pytorch_model.bin \
+ -P /home/app/web
+
+RUN mv /home/app/web/pytorch_model.bin /home/app/web/kobert/kobert_from_pretrained
 
 # change to the app user
 USER app

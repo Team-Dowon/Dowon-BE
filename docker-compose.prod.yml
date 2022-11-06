@@ -6,7 +6,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile.prod
-    command: gunicorn server.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn server.wsgi:application --bind 0.0.0.0:8000 --timeout 120
     environment:
       DJANGO_SETTINGS_MODULE: server.settings.production
     env_file:
@@ -26,6 +26,7 @@ services:
     volumes:
       - static:/home/app/web/static
       - media:/home/app/web/media
+      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
       - "80:80"
     depends_on:
