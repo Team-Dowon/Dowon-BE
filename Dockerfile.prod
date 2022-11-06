@@ -97,7 +97,9 @@ RUN curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=`awk 
 
 RUN curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=`awk \
  '/download/ {print $NF}' ./cookie`&id=1V2XbsuMq4g-IFP6wIzkWlKn5tVrfKsL9" -o pytorch_model.bin \
- -P /home/app/web/kobert/kobert_from_pretrained
+ -P /home/app/web
+
+RUN mv /home/app/web/pytorch_model.bin /home/app/web/kobert/kobert_from_pretrained
 
 # change to the app user
 USER app
