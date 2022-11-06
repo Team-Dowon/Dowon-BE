@@ -60,15 +60,15 @@ class SentenceToNormal(APIView):
 class test(APIView):
     def post(self, request):
         try:
-            sentence = request.data['sentence']
-            s_predict = bert_predict(sentence)
-            v_predict = s_predict.area()
+            sentence = request.data['sentence'] # sentence 데이터 가져오기
+            s_predict = bert_predict(sentence)  # sentence 데이터 넣기
+            v_predict = s_predict.area()    # sentence 데이터로 감성 예측
             emotion = v_predict[6]
             v_predict.pop()
-            percent = max(v_predict)
+            percent = max(v_predict) # 최고 확률 값 확인
 
-            return JsonResponse({'예측값': emotion, '확률': percent}, status=200)
-        except Exception as e:
+            return JsonResponse({'예측값': emotion, '확률': percent}, status=200)    # 프론트로 전달
+        except Exception as e:  # 에러 값 확인
             return Response({
                 'message': str(e),
             }, status=status.HTTP_400_BAD_REQUEST)

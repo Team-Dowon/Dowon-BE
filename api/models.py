@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager, PermissionsMixin)
 
-
+# 모델 mysql 속성값들 설정
 class UserManager(BaseUserManager):
     use_in_migrations = True
 

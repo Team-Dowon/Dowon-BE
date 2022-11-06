@@ -1,7 +1,7 @@
 from django import forms
 from .models import *
 
-
+# 폼으로 임시 설정
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post

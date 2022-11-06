@@ -76,9 +76,9 @@ class bert_predict(object):
             vocab_path, padding_token="[PAD]"
         )
 
-        model = BERTClassifier(bertmodel, dr_rate=0.5).to(device)
+        model = BERTClassifier(bertmodel, dr_rate=0.5).to(device)   # 버트 모델로 초기값 설정
         model.load_state_dict(
-            torch.load('./SentimentAnalysisKOBert_StateDict.pt', map_location='cpu'))
+            torch.load('./SentimentAnalysisKOBert_StateDict.pt', map_location='cpu'))   # 모델 가져오기 (cpu로 사용)
         # Setting parameters
         max_len = 64
         batch_size = 32

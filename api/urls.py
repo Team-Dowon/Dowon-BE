@@ -3,6 +3,7 @@ from .views import board_views, dictionary_views, naturalML_views, user_views
 
 from rest_framework_simplejwt.views import TokenRefreshView
 
+# api들 주소 정해주기.
 urlpatterns = [
 
     path('token/refresh', TokenRefreshView.as_view()),

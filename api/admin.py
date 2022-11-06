@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import *
 
-
+# admin 페이지의 DB정보 보이게 하기.
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = ['id']

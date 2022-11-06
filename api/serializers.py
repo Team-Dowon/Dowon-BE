@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import *
 
 
+# 시리얼 라이즈 데이터로 저장 -> 코드 길이 단축
 class VoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = KDictionary

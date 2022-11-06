@@ -13,16 +13,16 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 
 # 사용자 정보
-class UserDetailView(APIView):
-    permission_classes = [IsAuthenticated]
+class UserDetailView(APIView):  # 현재 유저의 정보 가져오기
+    permission_classes = [IsAuthenticated]  # 로그인 확인
 
     def post(self, request):
-        if request.user.is_anonymous:
+        if request.user.is_anonymous:   # 유저 확인
             return Response({
                 "user": "User Not Found"
             }, status=status.HTTP_404_NOT_FOUND)
         else:
-            serializer = UserSerializer(request.user)
+            serializer = UserSerializer(request.user)   # 시리얼 라이즈 데이터로 보네기
             return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -94,15 +94,15 @@ class RegisterView(APIView):  # 회원가입
 class LogoutView(APIView):  # 로그아웃
     def post(self, request):
         try:
-            refresh_token = request.COOKIES.get('jwt')
+            refresh_token = request.COOKIES.get('jwt')  # jwt 토큰 사용
             if not refresh_token:
                 return Response({
                     'message': '토큰이 없습니다.',
                 }, status=status.HTTP_400_BAD_REQUEST)
             res = Response()
-            res.delete_cookie('jwt')
+            res.delete_cookie('jwt')    # jwt 토큰 삭제
             token = RefreshToken(refresh_token)
-            token.blacklist()
+            token.blacklist()   # 토큰 블랙리스트 올리기
 
             res.data = {'message': "로그아웃 완료"}
 
@@ -113,17 +113,17 @@ class LogoutView(APIView):  # 로그아웃
             }, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ProfileView(UpdateAPIView):
-    permission_classes = [IsAuthenticated]
+class ProfileView(UpdateAPIView):   # 유저 프로필 사진
+    permission_classes = [IsAuthenticated]  # 로그인 확인
     serializer_class = ProfileSerializer
 
-    def update(self, request, *args, **kwargs):
+    def update(self, request, *args, **kwargs):     # patch -> update로 특정 부분만 변경
         partial = kwargs.pop('partial', False)
         instance = User.objects.get(pk=request.user.id)
         data = request.data
-        serializer = self.get_serializer(instance, data=data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
+        serializer = self.get_serializer(instance, data=data, partial=partial)  # 사진만 변경
+        serializer.is_valid(raise_exception=True)   # 유효성 확인
+        self.perform_update(serializer)     # 업데이트 하기
         if getattr(instance, '_prefetched_objects_cache', None):
             # If 'prefetch_related' has been applied to a queryset, we need to
             # forcibly invalidate the prefetch cache on the instance.
