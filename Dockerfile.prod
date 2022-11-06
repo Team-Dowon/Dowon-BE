@@ -95,5 +95,13 @@ RUN curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=`awk 
  '/download/ {print $NF}' ./cookie`&id=1as_8buFXZN1t8wHQ6yd2voAoiw72lFF-" -o SentimentAnalysisKOBert_StateDict.pt \
  -P /home/app/web
 
+RUN curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=`awk \
+ '/download/ {print $NF}' ./cookie`&id=10PIQzQQjlLM_PNfsXK32i6rnfbcKr8mx" -o kobert_v1.zip \
+ -P /home/app/web/.cache
+
+RUN curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=`awk \
+ '/download/ {print $NF}' ./cookie`&id=1jV67v6GGL2tNulDbuo9q-7oh6DZImrUI" -o kobert_news_wiki_ko_cased-1087f8699e.spiece \
+ -P /home/app/web/.cache
+
 # change to the app user
 USER app
