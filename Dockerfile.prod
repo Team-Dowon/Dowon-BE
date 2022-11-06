@@ -95,8 +95,6 @@ RUN curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=`awk 
  '/download/ {print $NF}' ./cookie`&id=1as_8buFXZN1t8wHQ6yd2voAoiw72lFF-" -o SentimentAnalysisKOBert_StateDict.pt \
  -P /home/app/web
 
-RUN mkdir /home/app/web/kobert/kobert_from_pretrained
-
 RUN curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=`awk \
  '/download/ {print $NF}' ./cookie`&id=1V2XbsuMq4g-IFP6wIzkWlKn5tVrfKsL9" -o pytorch_model.bin \
  -P /home/app/web/kobert/kobert_from_pretrained
