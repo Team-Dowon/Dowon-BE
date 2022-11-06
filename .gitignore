@@ -166,6 +166,9 @@ cython_debug/
 # Bert Model
 SentimentAnalysisKOBert_StateDict.pt
 
+# koBert Model
+pytorch_model.bin
+
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
