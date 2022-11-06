@@ -1,3 +1,5 @@
+import os
+
 from torch.utils.data import Dataset
 # torch
 import torch
@@ -10,6 +12,9 @@ from kobert.utils import get_tokenizer
 
 
 # KoBERT에 입력될 데이터셋 정리
+from transformers import BertModel
+
+
 class BERTDataset(Dataset):
     def __init__(self, dataset, sent_idx, label_idx, bert_tokenizer, max_len,
                  pad, pair):
@@ -62,14 +67,18 @@ class bert_predict(object):
 
     # 예측 모델 설정
     def area(self):
-        # BERT 모델, Vocabulary 불러오기 필수
-        bertmodel, vocab = get_pytorch_kobert_model()
-
         device = torch.device('cpu')
+        # BERT 모델, Vocabulary 불러오기 필수
+        model_path = os.path.join(os.path.expanduser('.cache'), "kobert_from_pretrained")
+        bertmodel = BertModel.from_pretrained(model_path, return_dict=False)
+        vocab_path = get_tokenizer()
+        vocab = nlp.vocab.BERTVocab.from_sentencepiece(
+            vocab_path, padding_token="[PAD]"
+        )
+
         model = BERTClassifier(bertmodel, dr_rate=0.5).to(device)
         model.load_state_dict(
             torch.load('./SentimentAnalysisKOBert_StateDict.pt', map_location='cpu'))
-
         # Setting parameters
         max_len = 64
         batch_size = 32
@@ -77,8 +86,6 @@ class bert_predict(object):
         # 토큰화
         tokenizer = get_tokenizer()
         tok = nlp.data.BERTSPTokenizer(tokenizer, vocab, lower=False)
-        device = torch.device("cpu")
-
         data = [self.predict_sentence, '0']
         dataset_another = [data]
 
