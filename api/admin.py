@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import *
 
+
 # admin 페이지의 DB정보 보이게 하기.
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
@@ -9,11 +10,6 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(SDictionary)
 class SDictionaryAdmin(admin.ModelAdmin):
-    list_display = ['id']
-
-
-@admin.register(KDictionary)
-class KDictionaryAdmin(admin.ModelAdmin):
     list_display = ['id']
 
 
@@ -35,3 +31,8 @@ class CommentAdmin(admin.ModelAdmin):
 @admin.register(Request)
 class RequestAdmin(admin.ModelAdmin):
     list_display = ['id', 'date']  # pk는 primary key에 대한 별칭
+
+
+@admin.register(Improvement)
+class ImprovementAdmin(admin.ModelAdmin):
+    list_display = ['id']

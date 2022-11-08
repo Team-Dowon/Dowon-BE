@@ -9,12 +9,6 @@ class SDictionarySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class KDictionarySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = KDictionary
-        fields = '__all__'
-
-
 class RequestSerializer(serializers.ModelSerializer):
     user_nickname = serializers.CharField(source='user.nickname')
     user_profile_pic = serializers.ImageField(source='user.profile_pic')
@@ -92,3 +86,4 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['profile_pic']
+

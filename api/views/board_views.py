@@ -243,3 +243,32 @@ class RequestLikeView(APIView):   # 유저 프로필 사진
                 'message': '좋아요'
             }, status=status.HTTP_200_OK)
 
+
+class ImprovementView(APIView):   # 유저 프로필 사진
+    permission_classes = [IsAuthenticated]  # 로그인 확인
+
+    def post(self, request):
+        user = User.objects.get(id=request.user.id)  # 현재 유저 정보 입력
+        star = request.data['star']
+        initial_sentence = request.data['initial_sentence']
+        trans_sentence = request.data['trans_sentence']
+        request_sentence = request.data['request_sentence']
+
+        data = {
+            "user": user,
+            "star": star,
+            "initial_sentence": initial_sentence,
+            "trans_sentence": trans_sentence,
+            "request_sentence": request_sentence,
+        }
+        form = ImprovementForm(data=data)  # 폼 임시 저장
+
+        if form.is_valid():  # 폼이 유효하다면 저장
+            form.save()
+
+            return Response("Improvement Submitted", status=status.HTTP_201_CREATED)
+        return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+

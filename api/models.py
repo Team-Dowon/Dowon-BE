@@ -81,17 +81,11 @@ class SDictionary(BaseDictionary):
         return self.name
 
 
-class KDictionary(BaseDictionary):
-
-    def __str__(self):
-        return self.name
-
-
 class Request(BaseRPC):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_request')
     title = models.CharField(max_length=25)
     name = models.CharField(max_length=16)
-    like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_request', null=True, blank=True)
+    like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_request', default='', blank=True)
 
     def __str__(self):
         return self.title
@@ -121,3 +115,14 @@ class Analyzer(models.Model):
 
     def __str__(self):
         return self.word
+
+
+class Improvement(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_improvement')
+    star = models.IntegerField()
+    initial_sentence = models.CharField(max_length=500)
+    trans_sentence = models.CharField(max_length=500)
+    request_sentence = models.CharField(max_length=500)
+
+    def __str__(self):
+        return self.request_sentence

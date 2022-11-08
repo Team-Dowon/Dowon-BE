@@ -18,3 +18,9 @@ class RequestForm(forms.ModelForm):
     class Meta:
         model = Request
         fields = '__all__'
+
+
+class ImprovementForm(forms.ModelForm):
+    class Meta:
+        model = Improvement
+        fields = '__all__'
