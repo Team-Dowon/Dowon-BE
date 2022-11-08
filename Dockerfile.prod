@@ -66,8 +66,7 @@ RUN apt-get clean && \
 RUN mkdir -p /home/app
 
 # create the app user
-RUN groupadd --gid 10001 app && \
-    useradd --gid 10001 --uid 10001 --home-dir /app app
+RUN addgroup -S app && adduser -S app -G app
 
 # create the appropriate directories
 ENV HOME=/home/app
