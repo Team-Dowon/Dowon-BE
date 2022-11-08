@@ -1,6 +1,6 @@
 from .base import *  # noqa
 
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS')
 
 DATABASES = {
