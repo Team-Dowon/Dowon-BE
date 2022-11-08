@@ -93,6 +93,9 @@ COPY . $APP_HOME
 # chown all the files to the app user
 RUN chown -R app:app $APP_HOME
 
+# change to the app user
+USER app
+
 # download Bert model
 RUN curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=`awk \
  '/download/ {print $NF}' ./cookie`&id=1as_8buFXZN1t8wHQ6yd2voAoiw72lFF-" -o SentimentAnalysisKOBert_StateDict.pt \
@@ -105,6 +108,3 @@ RUN curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=`awk 
 
 #Kobert model move
 RUN mv /home/app/web/pytorch_model.bin /home/app/web/kobert/kobert_from_pretrained
-
-# change to the app user
-USER app
