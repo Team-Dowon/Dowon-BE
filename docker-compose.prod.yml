@@ -26,7 +26,7 @@ services:
     environment:
       TZ: "Asia/Seoul"
     volumes:
-      - static:/home/app/web/static
+      - /home/app/web/static/:/static
       - media:/home/app/web/media
     ports:
       - "80:80"
