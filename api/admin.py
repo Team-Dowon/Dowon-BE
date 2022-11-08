@@ -22,11 +22,6 @@ class AnalyzerAdmin(admin.ModelAdmin):
     list_display = ['id']
 
 
-@admin.register(Vote)
-class VoteAdmin(admin.ModelAdmin):
-    list_display = ['id']
-
-
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     list_display = ['id', 'date']

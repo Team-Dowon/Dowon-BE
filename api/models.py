@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager, PermissionsMixin)
 
 # 모델 mysql 속성값들 설정
+from server import settings
+
+
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -88,6 +91,7 @@ class Request(BaseRPC):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_request')
     title = models.CharField(max_length=25)
     name = models.CharField(max_length=16)
+    like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_request', null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -108,15 +112,6 @@ class Comment(BaseRPC):
 
     def __str__(self):
         return self.content
-
-
-class Vote(models.Model):
-    request = models.ForeignKey(Request, on_delete=models.CASCADE, related_name='request_vote')
-    tag = models.BooleanField(default=False)
-    date = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return str(self.request)
 
 
 class Analyzer(models.Model):

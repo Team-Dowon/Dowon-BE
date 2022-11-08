@@ -1,3 +1,5 @@
+from rest_framework.permissions import IsAuthenticated
+
 from api.serializers import *
 from api.forms import *
 
@@ -216,3 +218,28 @@ class RequestDetailView(APIView):   # 특정 댓글 가져오기, 변경, 삭제
             request1.delete()
             return Response(f"A{request_id} Deleted", status=status.HTTP_200_OK)
         return Response("Not allowed user", status=status.HTTP_400_BAD_REQUEST)
+
+
+class RequestLikeView(APIView):   # 유저 프로필 사진
+    permission_classes = [IsAuthenticated]  # 로그인 확인
+
+    def get_object_or_404(self, request_id):    # 특정 요청 가져오기
+        try:
+            return Request.objects.get(pk=request_id)
+        except Request.DoesNotExist:
+            raise Http404
+
+    def post(self, request, request_id):
+        request1 = self.get_object_or_404(request_id)
+
+        if request1.like_users.filter(pk=request.user.pk).exists():
+            request1.like_users.remove(request.user)
+            return Response({
+                'message': '좋아요 취소'
+            }, status=status.HTTP_200_OK)
+        else:
+            request1.like_users.add(request.user)
+            return Response({
+                'message': '좋아요'
+            }, status=status.HTTP_200_OK)
+

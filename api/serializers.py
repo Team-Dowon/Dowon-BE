@@ -3,12 +3,6 @@ from .models import *
 
 
 # 시리얼 라이즈 데이터로 저장 -> 코드 길이 단축
-class VoteSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = KDictionary
-        fields = '__all__'
-
-
 class SDictionarySerializer(serializers.ModelSerializer):
     class Meta:
         model = SDictionary
@@ -27,7 +21,7 @@ class RequestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Request
-        fields = ('id', 'user_nickname', 'title', 'content', 'name', 'date', 'user_profile_pic')
+        fields = ('id', 'user_nickname', 'title', 'content', 'name', 'date', 'user_profile_pic', 'like_users')
 
 
 class PostSerializer(serializers.ModelSerializer):

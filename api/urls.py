@@ -24,6 +24,7 @@ urlpatterns = [
     path('post/<int:post_id>/comment/<int:comment_id>', board_views.CommentDetailView.as_view()),
     path('request', board_views.RequestListView.as_view()),
     path('request/<int:request_id>', board_views.RequestDetailView.as_view()),
+    path('request/<int:request_id>/like', board_views.RequestLikeView.as_view()),
 
     path('sentence', naturalML_views.SentenceToNormal.as_view()),
     path('test', naturalML_views.test.as_view()),
