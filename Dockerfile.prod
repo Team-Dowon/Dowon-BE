@@ -84,6 +84,9 @@ RUN pip install mysqlclient
 RUN pip install --upgrade pip setuptools --no-cache --no-deps /wheels/*
 #RUN apt-get autoremove build-deps
 
+# copy entrypoint-prod.sh
+COPY ./config/docker/entrypoint.prod.sh $APP_HOME
+
 # copy project
 COPY . $APP_HOME
 
@@ -102,9 +105,6 @@ RUN curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=`awk 
 
 #Kobert model move
 RUN mv /home/app/web/pytorch_model.bin /home/app/web/kobert/kobert_from_pretrained
-
-#static file
-CMD ["bash", "-c", "python manage.py collectstatic --settings=BACKEND.settings.deploy --no-input"]
 
 # change to the app user
 USER app
