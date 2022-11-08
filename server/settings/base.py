@@ -34,7 +34,7 @@ DEBUG = env('DEBUG')
 AUTH_USER_MODEL = 'api.User'
 
 ALLOWED_HOSTS = [
-    "ec2-54-180-119-169.ap-northeast-2.compute.amazonaws.com",
+    "http://ec2-54-180-119-169.ap-northeast-2.compute.amazonaws.com/",
     "127.0.0.1"
 ]
 
