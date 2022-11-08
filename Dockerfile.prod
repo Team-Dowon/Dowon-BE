@@ -32,6 +32,19 @@ RUN python3 -m pip install --upgrade pip
 COPY ./requirements.txt .
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
+# download Bert model
+RUN curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=`awk \
+ '/download/ {print $NF}' ./cookie`&id=1as_8buFXZN1t8wHQ6yd2voAoiw72lFF-" -o SentimentAnalysisKOBert_StateDict.pt \
+ -P /home/app/web
+
+#download Kobert model
+RUN curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=`awk \
+ '/download/ {print $NF}' ./cookie`&id=1V2XbsuMq4g-IFP6wIzkWlKn5tVrfKsL9" -o pytorch_model.bin \
+ -P /home/app/web
+
+#Kobert model move
+RUN mv /home/app/web/pytorch_model.bin /home/app/web/kobert/kobert_from_pretrained
+
 
 # FINAL #
 
@@ -95,16 +108,3 @@ RUN chown -R app:app $APP_HOME
 
 # change to the app user
 USER app
-
-# download Bert model
-RUN curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=`awk \
- '/download/ {print $NF}' ./cookie`&id=1as_8buFXZN1t8wHQ6yd2voAoiw72lFF-" -o SentimentAnalysisKOBert_StateDict.pt \
- -P /home/app/web
-
-#download Kobert model
-RUN curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=`awk \
- '/download/ {print $NF}' ./cookie`&id=1V2XbsuMq4g-IFP6wIzkWlKn5tVrfKsL9" -o pytorch_model.bin \
- -P /home/app/web
-
-#Kobert model move
-RUN mv /home/app/web/pytorch_model.bin /home/app/web/kobert/kobert_from_pretrained
