@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from dowonpackage.tag import Okt
-from api.kobert_predict import bert_predict
+from api.tasks import bert_predict_c
 
 class SentenceToNormal(APIView):
     def post(self, request):
@@ -61,7 +61,7 @@ class test(APIView):
     def post(self, request):
         try:
             sentence = request.data['sentence'] # sentence 데이터 가져오기
-            s_predict = bert_predict(sentence)  # sentence 데이터 넣기
+            s_predict = bert_predict_c(sentence)
             v_predict = s_predict.area()    # sentence 데이터로 감성 예측
             emotion = v_predict[6]
             v_predict.pop()
