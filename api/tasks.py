@@ -10,3 +10,4 @@ from api.kobert_predict import bert_predict
 @shared_task
 def bert_predict_c(sentence):
     bert_predict(sentence)
+    return None;
