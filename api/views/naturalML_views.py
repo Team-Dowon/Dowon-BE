@@ -61,8 +61,12 @@ class test(APIView):
     def post(self, request):
         try:
             sentence = request.data['sentence'] # sentence 데이터 가져오기
-            bert_predict_c(sentence).delay(30)
-            return JsonResponse({'로딩중'}, status=200)    # 프론트로 전달
+            s_predict = bert_predict_c(sentence)
+            v_predict = s_predict.area()  # sentence 데이터로 감성 예측
+            emotion = v_predict[6]
+            v_predict.pop()
+            percent = max(v_predict)  # 최고 확률 값 확인
+            return Response({'예측값': emotion, '확률': percent}, status=200)  # 프론트로 전달
         except Exception as e:  # 에러 값 확인
             return Response({
                 'message': str(e),
