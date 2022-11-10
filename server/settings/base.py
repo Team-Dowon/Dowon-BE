@@ -189,7 +189,7 @@ AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.%s.amazonaws.com' % (AWS_STORAGE_BUCKET_NAME, AWS_REGION)
 
 # Celery
-CELERY_BROKER_URL = 'amqp://user:pwd@rabbitmq:5672/'  # 배포용
+CELERY_BROKER_URL = 'amqp://quest:quest@rabbitmq:5672/'  # 배포용
 # CELERY_BROKER_URL = 'amqp://localhost'  # 로컬 테스트용
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_ACCEPT_CONTENT = ['application/json']
