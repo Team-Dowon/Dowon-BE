@@ -61,7 +61,7 @@ class test(APIView):
     def post(self, request):
         try:
             sentence = request.data['sentence'] # sentence 데이터 가져오기
-            bert_predict_c(sentence)
+            bert_predict_c(sentence).delay(30)
             return JsonResponse({'로딩중'}, status=200)    # 프론트로 전달
         except Exception as e:  # 에러 값 확인
             return Response({
