@@ -67,6 +67,7 @@ class BERTClassifier(nn.Module):  ## 클래스를 상속
 
 
 class bert_predict(object):
+    @shared_task
     def __init__(self, predict_sentence):
         self.predict_sentence = predict_sentence
 
