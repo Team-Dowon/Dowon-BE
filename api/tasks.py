@@ -65,12 +65,13 @@ class BERTClassifier(nn.Module):  ## 클래스를 상속
             out = self.dropout(pooler)
         return self.classifier(out)
 
-@shared_task
+
 class bert_predict(object):
     def __init__(self, predict_sentence):
         self.predict_sentence = predict_sentence
 
     # 예측 모델 설정
+    @shared_task
     def area(self):
         device = torch.device('cpu')
         # BERT 모델, Vocabulary 불러오기 필수
