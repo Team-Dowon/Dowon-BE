@@ -3,8 +3,10 @@
 from __future__ import absolute_import, unicode_literals
 from celery import shared_task
 
+
 import os
 
+from rest_framework import status
 from torch.utils.data import Dataset
 # torch
 import torch
@@ -17,7 +19,6 @@ from kobert.utils import get_tokenizer
 
 # KoBERT에 입력될 데이터셋 정리
 from transformers import BertModel
-
 
 class BERTDataset(Dataset):
     def __init__(self, dataset, sent_idx, label_idx, bert_tokenizer, max_len,
@@ -66,8 +67,8 @@ class BERTClassifier(nn.Module):  ## 클래스를 상속
 
 
 # 모델 예측
-@shared_task
-def bert_predict(predict_sentence):
+@shared_task(bind=True)
+def bert_predict(self, predict_sentence):
     device = torch.device('cpu')
     # BERT 모델, Vocabulary 불러오기 필수
     model_path = os.path.join(os.path.expanduser('kobert'), "kobert_from_pretrained")
@@ -92,7 +93,6 @@ def bert_predict(predict_sentence):
 
     another_test = BERTDataset(dataset_another, 0, 1, tok, max_len, True, False)
     test_dataloader = torch.utils.data.DataLoader(another_test, batch_size=batch_size, num_workers=5)
-
     model.eval()
 
     for batch_id, (token_ids, valid_length, segment_ids, label) in enumerate(test_dataloader):
@@ -130,4 +130,36 @@ def bert_predict(predict_sentence):
                 emotion = '상처'
 
             probability.append(emotion)
-    return probability
+    pre_storage(probability)
+    data = {
+        "input": probability,
+        "output": probability,
+        "word": probability,
+    }
+
+    from .forms import AnalyzerForm
+    from rest_framework.response import Response
+    form = AnalyzerForm(data=data)  # 폼으로 임시 저장
+
+    if form.is_valid():  # 폼이 유효하면 저장
+        form.save()
+
+        return Response("Post Submitted", status=status.HTTP_201_CREATED)
+    return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
+
+def pre_storage(pro):
+    data = {
+        "input": pro,
+        "output": pro,
+        "word": pro,
+    }
+
+    from .forms import AnalyzerForm
+    from rest_framework.response import Response
+    form = AnalyzerForm(data=data)  # 폼으로 임시 저장
+
+    if form.is_valid():  # 폼이 유효하면 저장
+        form.save()
+
+        return Response("Post Submitted", status=status.HTTP_201_CREATED)
+    return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)

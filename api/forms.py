@@ -24,3 +24,9 @@ class ImprovementForm(forms.ModelForm):
     class Meta:
         model = Improvement
         fields = '__all__'
+
+
+class AnalyzerForm(forms.ModelForm):
+    class Meta:
+        model = Analyzer
+        fields = '__all__'
