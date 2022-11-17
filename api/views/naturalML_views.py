@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from dowonpackage.tag import Okt
-from api.tasks import bert_predict
+from api.kobert_predict import bert_predict
 
 class SentenceToNormal(APIView):
     def post(self, request):
